@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load compress %}
+{% load static %}
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'dist/output.css' %}">
+    {% endcompress %}
+</head>
+
+<body class="bg-slate-500">
+    <div class="container mx-auto flex justify-center">
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <script src="{% static 'flowbite/dist/flowbite.min.js' %}"></script>
+</body>
+
+</html>
