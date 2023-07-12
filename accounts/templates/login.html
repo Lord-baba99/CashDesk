@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+<link href="{% static 'css/log_sign.css' %}" rel="stylesheet">
+{% endblock style %}
+{% block title %}
+Connection
+{% endblock title %}
+
+{% block content %}
+<div class="container mx-auto">
+<main class="flex flex-col items-center content-center">
+  <h1 class="">Se connecter</h1>
+  <div class="">
+      <p>Vous n'avez pas de compte ?
+          <a href="{% url 'signup' %}" class="">Inscrivez-vous ici !</a>
+      </p>
+  </div>
+  <div>{{error_message}}</div>
+  <form hx-post='{% url 'login' %}' hx-target='body' hx-swap='innerHTML' class="grid gap-6 grid-cols-2 login-form flex-wrap">
+    {% csrf_token %}
+    <div class="flex flex-col">
+      <label for="floatingInput" class="mb-2">Nom d'utilisateur</label>
+      <input type="text" class="text-slate-600 p-2 rounded" name="username" id="floatingInput" placeholder="Lord_baba">
+    </div>
+    <div class="flex flex-col">
+      <label for="floatingPassword" class="mb-2">Mot de passe</label>
+      <input type="password" class="text-slate-600 p-2 rounded" name="password" id="floatingPassword" placeholder="Password">
+    </div>
+
+    <button class="" type="submit">Se connecter</button>
+  </form>
+</main>
+</div>
+{% endblock content %}

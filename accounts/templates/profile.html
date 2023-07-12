@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ user.username }}
+{% endblock title %}
+
+{% block content %}
+<div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateProfileModalLabel">{{ user.username }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <form action="{% url 'update-profile' %}" method="post">
+          {% csrf_token %}
+      <div class="modal-body">
+          <p>
+            <label for="id_username">Nom d'utilisateur :</label>
+            <input type="text" name="username" id="id_username" value="{{user.username}}" maxlength="150" required>
+          </p>
+          <p>
+            <label for="id_name">Nom :</label>
+            <input type="text" name="last_name" id="id_name" value="{{user.last_name}}" maxlength="150" required>
+          </p>
+          <p>
+            <label for="id_first_name">Prénom :</label>
+            <input type="text" name="first_name" id="id_first_name" value="{{user.first_name}}" maxlength="150" required>
+          </p>
+          <p>
+            <label for="id_email">Adresse mail :</label>
+            <input type="text" name="email" id="id_email" value="{{user.email}}" maxlength="255" required>
+          </p>
+          <p>
+            <label for="id_location">Adresse physique :</label>
+            <input type="text" name="location" id="id_location" value="{{user.location}}" maxlength="255">
+          </p>
+          <p>
+            <label for="id_niu">NIU :</label>
+            <input type="text" name="niu" id="id_niu" value="{{user.niu}}" maxlength="255">
+          </p>
+          <p>
+            <label for="id_site_web">Site web :</label>
+            <input type="text" name="site_web" id="id_site_web" value="{{user.site_web}}" maxlength="255">
+          </p>
+          <p>
+            <label for="id_facebook">Facebook :</label>
+            <input type="text" name="facebook" id="id_facebook" value="{{user.facebook}}" maxlength="255">
+          </p>
+          <p>
+            <label for="id_whatsapp">Whatsapp :</label>
+            <input type="text" name="whatsapp" id="id_whatsapp" value="{{user.whatsapp}}" maxlength="255">
+          </p>
+          <p>
+            <label for="id_instagram">Instagram :</label>
+            <input type="text" name="instagram" id="id_instagram" value="{{user.instagram}}" maxlength="255">
+          </p>
+          <p>
+            <label for="id_linkedin">Linkedin :</label>
+            <input type="text" name="linkedin" id="id_linkedin" value="{{user.linkedin}}" maxlength="255">
+          </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
+        <input type="submit" class="btn btn-primary" value="Sauvegarder">
+      </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<div class="fluid-container bg-dark bg-gradient" style="max-height: 300px; height: 300px;">
+  <div class="container w-100 h-100 position-relative">
+    <div class="container overflow-hidden w-100 h-100 position-relative">
+      <img
+        src="{% if user.banner %}{{ user.banner.url }}{% else %}{% for default in user_utilities %}{{ default.banner.url }}{% endfor %}{% endif %}"
+        class="card-img-top position-absolute top-50 start-50 translate-middle opacity-75"
+        alt="photo de couverture de {{ user.username }}">
+      <div class="card bg-dark bg-opacity-75 d-inline-block mt-4 p-3 text-white">
+        <h3 class="card-title">{{ user.email }}</h3>
+        <h1 class="card-title">{{ user.username }}</h1>
+      </div>
+    </div>
+    <div class="position-relative w-50 m-auto">
+      <div class="position-absolute top-100 start-100 translate-middle overflow-hidden"
+        style="height: 200px; width: 200px; border-radius:200px;">
+        {% if user.image %}
+        <img src="{{ user.image.url }}" class="position-absolute top-50 start-50 translate-middle"
+          alt="photo de profile de {{ user.username }}">
+        {% else %}
+        <img src="{% for default in user_utilities %}{{ default.image.url }}{% endfor %}"
+          class="position-absolute top-50 start-50 translate-middle" alt="photo de profile vide">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+
+  <div class="col-md-2">
+    <p class="col">
+    <h4>Nom :</h4>
+    <br>
+    <h1>{{ user.last_name }}</h1>
+    </p>
+    <p class="col">
+    <h4>Prénom :</h4>
+    <br>
+    <h1>{{ user.first_name }}</h1>
+    </p>
+    <p class="col">
+    <h4>Nom d'utilisateur :</h4>
+    <br>
+    <h1>{{ user.username }}</h1>
+    </p>
+    <p class="col">
+    <h4>E-mail :</h4>
+    <br>
+    <h1>{{ user.email }}</h1>
+    </p>
+    <p class="col">
+    <h4>Téléphone :</h4>
+    <br>
+    <h1>{{ user.phone }}</h1>
+    </p>
+    <p class="col">
+    <h4>Adresse :</h4>
+    <br>
+    <h1>{{ user.location }}</h1>
+    </p>
+    <p class="col">
+    <h4>Niu :</h4>
+    <br>
+    <h1>{{ user.niu }}</h1>
+    </p>
+    <p class="col">
+    <h4>Site Web :</h4>
+    <br>
+    <h1>{{ user.site_web }}</h1>
+    </p>
+    <p class="col">
+    <h4>Facebook :</h4>
+    <br>
+    <h1>{{ user.facebook }}</h1>
+    </p>
+    <p class="col">
+    <h4>whatsapp :</h4>
+    <br>
+    <h1>{{ user.whatsapp }}</h1>
+    </p>
+    <p class="col">
+    <h4>instagram :</h4>
+    <br>
+    <h1>{{ user.instagram }}</h1>
+    </p>
+    <p class="col">
+    <h4>Linkedin :</h4>
+    <br>
+    <h1>{{ user.linkedin }}</h1>
+    </p>
+  </div>
+
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateProfileModal">
+    Modifier le profile
+  </button>
+</div>
+
+{% endblock content %}

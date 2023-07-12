@@ -18,10 +18,12 @@ from django.urls import path, include
 from . views import *
 import cashdeskapp.urls
 import bankapp.urls
+import accounts.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
     path('caisse/', include(cashdeskapp.urls)),
-    path('banque/', include(bankapp.urls))
+    path('banque/', include(bankapp.urls)),
+    path('account/', include(accounts.urls)),
 ]
