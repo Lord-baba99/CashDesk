@@ -70,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'CashDesk.context_processors.global_context',
             ],
         },
     },
@@ -126,6 +127,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIR = [BASE_DIR / 'staticfiles/', BASE_DIR / 'accounts/static',]
 # STATIC_ROOT = BASE_DIR / 'static'
+
+MEDIA_URL = "medias/"
+MEDIA_ROOT = BASE_DIR / "mediafiles/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

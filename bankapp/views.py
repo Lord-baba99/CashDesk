@@ -30,27 +30,87 @@ def bank_operation_detail(request, pk):
     return render(request, 'bank_operation_detail.html', context)
 
 # @login_required(redirect_field_name="add-bank-operation")
+from .forms import BankOperationForm
+
 def add_bank_operation(request):
-    bank_op = BankOperationForm
-    print(request.POST)
-    if request.POST:
-        form = bank_op(request.POST)
-        print(request.POST.keys())
+    if request.method == 'POST':
+        form = BankOperationForm(request.POST)
         if form.is_valid():
-            # form.save()
-            return redirect('bank-home')
+            print('form valid')
+            # Les données du formulaire sont valides
+            # Récupérer les valeurs des champs du formulaire
+            bank = form.cleaned_data['bank']
+            user = form.cleaned_data['user']
+            reference = form.cleaned_data['reference']
+            wording = form.cleaned_data['wording']
+            done_date = form.cleaned_data['done_date']
+            expenditure = form.cleaned_data['expenditure']
+            income = form.cleaned_data['income']
+            amount_digit = form.cleaned_data['amount_digit']
+            amount_letter = form.cleaned_data['amount_letter']
+            depositor = form.cleaned_data['depositor']
+            withdrawer = form.cleaned_data['withdrawer']
+            # Traitez les autres champs du formulaire
+
+            if income:
+                print('income')
+            # Créer l'objet BankOperation avec les données du formulaire
+                operation = BankOperation.objects.create(
+                    bank=bank,
+                    user=user,
+                    reference=reference,
+                    wording=wording,
+                    done_date=done_date,
+                    income=income,
+                    amount_digit=amount_digit,
+                    amount_letter=amount_letter,
+                    depositor=depositor,
+                )
+                # Enregistrer l'objet BankOperation dans la base de données
+                operation.save()
+
+            elif expenditure:
+                print('expenditure')
+                operation = BankOperation.objects.create(
+                    bank=bank,
+                    user=user,
+                    reference=reference,
+                    wording=wording,
+                    done_date=done_date,
+                    expenditure=expenditure,
+                    amount_digit=amount_digit,
+                    amount_letter=amount_letter,
+                    withdrawer=withdrawer,
+                )
+
+                # Enregistrer l'objet BankOperation dans la base de données
+                operation.save()
+
+            # Rediriger ou afficher un message de succès
+            if request.POST.get('modal'):
+                operations = BankOperation.objects.all()
+                context = {
+                    'success': 'Formulaire enregistré avec succès !',
+                    'page_title': 'Opération bancaire',
+                    'banks': BankAccount.objects.all(),
+                    'operations': operations,
+                }
+                return render(request, 'bank/bankhome.html', context)
+            else:
+                # Rediriger vers une autre page ou afficher un message de succès
+                return HttpResponseRedirect('/success-page/')
         else:
-            print('form is not valid')
-            # if request.POST['modal']:
-            #     print('from modal')
-            return redirect('bank-home')
+            print('form invalid')
+    else:
+        form = BankOperationForm()
 
     context = {
         'page_title': 'Opération bancaire',
-        'form': bank_op,
+        'form': form,
         'banks': BankAccount.objects.all()
     }
     return render(request, 'bank/add_bank_operation.html', context)
+
 
 def add_continue_bank_operation(request):
     bank_op = BankOperationForm
