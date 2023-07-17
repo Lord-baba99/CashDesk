@@ -43,15 +43,15 @@
                     <div class="">
                         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#transactionTab" role="tablist">
                             <li class="mr-2" role="presentation">
-                                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-indigo-800 text-indigo-600 " id="expend-tab" data-tabs-target="#expend" type="button" role="tab" aria-controls="expend" aria-selected="false">Dépense</button>
+                                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-indigo-800 text-indigo-600 " id="expend-tab" data-tabs-target="#expend" type="button" role="tab" aria-controls="expend" aria-selected="false" onclick="toggleTransaction('expenditure')">Dépense</button>
                             </li>
                             <li class="mr-2" role="presentation">
-                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-indigo-800 text-indigo-600 hover:border-gray-300 dark:hover:text-gray-300" id="income-tab" data-tabs-target="#income" type="button" role="tab" aria-controls="income" aria-selected="false">Récette</button>
+                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-indigo-800 text-indigo-600 hover:border-gray-300 dark:hover:text-gray-300" id="income-tab" data-tabs-target="#income" type="button" role="tab" aria-controls="income" aria-selected="false" onclick="toggleTransaction('income')">Récette</button>
                             </li>
-                            <li>
+                            <li class="hidden">
                                 <input type="checkbox" name="expenditure" id="expenditure_id">
                             </li>
-                            <li>
+                            <li class="hidden">
                                 <input type="checkbox" name="income" id="income_id">
                             </li>
                         </ul>
@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div class="flex justify-between items-center">
-                <button type="submit" class="flex items-center text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
+                <button class="flex items-center text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" hx-post="{% url 'add-bank-operation' %}" hx-target="body" hx-swap="innerHTML">
             <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
         <span class="block ms-1">Enregistrer</span>
         </button>
@@ -90,7 +90,7 @@
             </svg>
             <span class="block ms-1">Réinitialiser</span>
         </label>
-        <button class="flex items-center text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" hx-get="{% url 'bank-home' %}" hx-target="body" hx-swap="innerHTML">
+        <button class="flex items-center text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" hx-get="{% url 'bank-operation-views' %}" hx-target="body" hx-swap="innerHTML" hx-push-url="true">
         <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="14" fill="none" viewBox="0 0 20 14">
             <path stroke="currentColor" stroke-width="2" d="M1 5h18M1 9h18m-9-4v8m-8 0h16a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1Z"/>
         </svg>

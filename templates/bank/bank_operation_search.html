@@ -1,0 +1,92 @@
+{% load static %}
+{% if operations.count > 0 %}
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-auto">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0 left-0 z-50">
+      <tr>
+        <th scope="col" class="p-4">
+          <div class="flex items-center">
+            <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" onclick="checkAllCheckbox()">
+            <label for="checkbox-all-search" class="sr-only">checkbox</label>
+          </div>
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Libelle
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Reference
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Date
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Montant
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Transaction
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Action
+        </th>
+      </tr>
+    </thead>
+    <tbody id="operation-table">
+      {% for operation in operations %}
+        <tr id="row-{{operation.id}}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-100 dark:hover:bg-gray-600">
+          <td class="w-4 p-4">
+            <div class="flex items-center">
+              <input id="checkbox-table-search-{{operation.id}}" type="checkbox" class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 CHECK">
+              <label for="checkbox-table-search-{{operation.id}}" class="sr-only">checkbox</label>
+            </div>
+          </td>
+          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            {{operation.wording}}
+          </th>
+          <td class="px-6 py-4">
+            {{operation.reference}}
+          </td>
+          <td class="px-6 py-4">
+            {{operation.done_date}}
+          </td>
+          <td class="px-6 py-4">
+            {{operation.amount_digit}} F CFA
+          </td>
+          <td class="px-6 py-4">
+            {% if operation.income %}
+              Recette
+              {% elif operation.expenditure %}
+              Depense
+            {% endif %}
+          </td>
+          <td class="px-6 py-4">
+            <button class="font-medium text-indigo-600 dark:text-indigo-500 hover:underline"
+            hx-get="{% url 'get-bank-operation' pk=operation.id %}"
+            hx-target="#row-{{operation.id}}"
+            hx-swap="outerHTML"
+            hx-trigger="edit"
+            _="on click
+            if .editing is not empty
+            swal.fire({title: 'Already Editing',
+            showCancelButton: true,
+            confirmButtonText: 'Yep, Edit This Row!',
+            text:'Hey!  You are already editing a row!  Do you want to cancel that edit and continue?'})
+            if the result's isConfirmed is false
+            halt
+            end
+            send cancel to .editing
+            end
+            trigger edit">
+            Edit
+            </button>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class=" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-100 dark:hover:bg-gray-600 ">
+    <div class="flex items-center justify-center">
+      <span class="block me-4 text-indigo-400">Aucune opération ne correspond à votre recherche</span>
+      <img src="{% static 'assets/img/empty-data.svg' %}" class="w-40">
+    </div>
+  </div>
+{% endif %}

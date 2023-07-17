@@ -1,1 +1,38 @@
 {% extends 'base.html' %}
+
+{% block content %}
+<table class="table delete-row-example">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody hx-target="closest tr" hx-swap="outerHTML">
+   <tr>
+      <td>INFO</td>
+      <td>INFO</td>
+      <td>
+        <button class="btn btn-danger"
+                hx-get="{% url 'get-bank-operation' pk=5 %}"
+                hx-trigger="edit"
+                _="on click
+                     if .editing is not empty
+                       Swal.fire({title: 'Already Editing',
+                                  showCancelButton: true,
+                                  confirmButtonText: 'Yep, Edit This Row!',
+                                  text:'Hey!  You are already editing a row!  Do you want to cancel that edit and continue?'})
+                       if the result's isConfirmed is false
+                         halt
+                       end
+                       send cancel to .editing
+                     end
+                     trigger edit">
+          Edit
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% endblock content %}

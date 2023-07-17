@@ -1,0 +1,40 @@
+<tr hx-trigger="cancel" id="row-{{operation.id}}" class='editing bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-100 dark:hover:bg-gray-600' hx-get="{% url 'return-bank-row' pk=operation.id %}">
+  <td class="w-4 p-4">
+            <div class="flex items-center">
+              <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 CHECK">
+              <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+            </div>
+          </td>
+          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          <form hx-boosted>
+            {% csrf_token %}
+            <input type="checkbox" name="from_table" class="hidden" checked>
+            <input type="number" name="pk" value="{{operation.id}}" class="hidden">
+            <input type="text" name="wording" value="{{operation.wording}}">
+            <button hx-post="{% url 'update-bank-operation' %}"
+                hx-swap="outerHTML" hx-target="#row-{{operation.id}}">valider</button>
+          </form>
+          </th>
+          <td class="px-6 py-4">
+            {{operation.reference}}
+          </td>
+          <td class="px-6 py-4">
+            {{operation.done_date}}
+          </td>
+          <td class="px-6 py-4">
+            {{operation.amount_digit}} F CFA
+          </td>
+          <td class="px-6 py-4">
+            {% if operation.income %}
+              Recette
+              {% elif operation.expenditure %}
+              Depense
+            {% endif %}
+          </td>
+  <td>
+    <button class="px-4 py-2 bg-red-800 font-medium text-white rounded pill" hx-get="{% url 'return-bank-row' pk=operation.id %}" hx-target="closest tr"
+                hx-swap="outerHTML">
+      Annuler
+    </button>
+  </td>
+</tr>
