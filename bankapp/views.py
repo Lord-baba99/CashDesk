@@ -41,12 +41,11 @@ def bank_operation_views(request, month=None, exercise=None):
     param: year = int --> the current year
     """
     # getting the current month to show up the operations view
-    c_month = month
-
+    c_month = Month.objects.get(name__icontains=month)
     if request.POST:
         c_month_id = request.POST.get('c_month_id')
         c_month = Month.objects.filter(id=c_month_id)
-    print(c_month)
+    
     context = {
     'page_title': 'Opérations bancaires',
     'operations': BankOperation.objects.filter(month__name__icontains=c_month, month__year=exercise),
@@ -55,7 +54,6 @@ def bank_operation_views(request, month=None, exercise=None):
     'months': Month.objects.filter(year_id=exercise),
     'current_month': c_month,
     }
-    print(context['current_month'])
     return render(request, 'bank/bank_operation.html', context)
 
 # @login_required(redirect_field_name="bank-operation-detail")
@@ -131,11 +129,16 @@ def add_bank_operation(request):
             # Rediriger ou afficher un message de succès
             if request.POST.get('modal'):
                 operations = BankOperation.objects.all()
+                exercise = Exercise.objects.get(
+                    id=request.POST.get('exercise'))
                 context = {
                     'success': 'Formulaire enregistré avec succès !',
                     'page_title': 'Opération bancaire',
                     'banks': BankAccount.objects.all(),
                     'operations': operations,
+                    'exercise': exercise,
+                    'months': Month.objects.filter(year_id=request.POST.get('exercise')),
+                    'current_month': Month.objects.get(name__contains=month, year=exercise.id)
                 }
                 return render(request, 'bank/bank_operation.html', context)
             
@@ -166,6 +169,13 @@ def get_bank_operation(request, pk=None):
         'operation': operation,
         }
         return render(request, 'bank/update_bank_operation.html', context)
+
+def delete_operation(request, month=None, exercise=None, pk=None):
+    operation = BankOperation.objects.get(pk=pk)
+    if operation:
+        operation.delete()
+    return redirect('bank-operation-views', month=month, exercise=exercise)
+
 def update_bank_operation(request):
     if request.POST:
         pk = request.POST.get('pk')

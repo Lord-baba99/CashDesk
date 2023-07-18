@@ -1,38 +1,142 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<table class="table delete-row-example">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody hx-target="closest tr" hx-swap="outerHTML">
-   <tr>
-      <td>INFO</td>
-      <td>INFO</td>
-      <td>
-        <button class="btn btn-danger"
-                hx-get="{% url 'get-bank-operation' pk=5 %}"
-                hx-trigger="edit"
-                _="on click
-                     if .editing is not empty
-                       Swal.fire({title: 'Already Editing',
-                                  showCancelButton: true,
-                                  confirmButtonText: 'Yep, Edit This Row!',
-                                  text:'Hey!  You are already editing a row!  Do you want to cancel that edit and continue?'})
-                       if the result's isConfirmed is false
-                         halt
-                       end
-                       send cancel to .editing
-                     end
-                     trigger edit">
-          Edit
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<tr>
+  <th><label for="id_month">Month:</label></th>
+  <td>
+    <ul class="errorlist">
+      <li>Select a valid choice. That choice is not one of the available choices.</li>
+    </ul>
+    <select name="month" required id="id_month">
+      <option value="">---------</option>
+
+      <option value="1">janvier</option>
+
+    </select>
+
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_bank">Bank:</label></th>
+  <td>
+
+    <select name="bank" required id="id_bank">
+      <option value="">---------</option>
+
+      <option value="1" selected>Besca &lt;&lt; HTGRF &gt;&gt;</option>
+
+    </select>
+
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_user">User:</label></th>
+  <td>
+
+    <select name="user" required id="id_user">
+      <option value="">---------</option>
+
+      <option value="1" selected>admin</option>
+
+    </select>
+
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_reference">Reference:</label></th>
+  <td>
+
+    <input type="text" name="reference" value=" 25-skf7858-frg7" maxlength="20" required id="id_reference">
+
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_wording">Wording:</label></th>
+  <td>
+
+    <input type="text" name="wording" value="Teste" maxlength="255" id="id_wording">
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_expenditure">Expenditure:</label></th>
+  <td>
+
+    <input type="checkbox" name="expenditure" id="id_expenditure" checked>
+
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_income">Income:</label></th>
+  <td>
+
+    <input type="checkbox" name="income" id="id_income">
+
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_done_date">Done date:</label></th>
+  <td>
+
+    <input type="text" name="done_date" value="2023-07-11" required id="id_done_date">
+
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_amount_digit">Amount digit:</label></th>
+  <td>
+
+    <input type="number" name="amount_digit" value="05000" min="-9223372036854775808" max="9223372036854775807" required
+      id="id_amount_digit">
+
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_amount_letter">Amount letter:</label></th>
+  <td>
+
+    <input type="text" name="amount_letter" value="cinq mille" maxlength="255" id="id_amount_letter">
+
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_depositor">Depositor:</label></th>
+  <td>
+
+    <input type="text" name="depositor" maxlength="255" id="id_depositor">
+
+
+  </td>
+</tr>
+
+<tr>
+  <th><label for="id_withdrawer">Withdrawer:</label></th>
+  <td>
+
+    <input type="text" name="withdrawer" value="Alkaba Coil" maxlength="255" id="id_withdrawer">
+
+
+
+
+  </td>
+</tr>
 {% endblock content %}

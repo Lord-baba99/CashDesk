@@ -190,7 +190,7 @@
                     <input class="transaction" type="checkbox" checked name="expenditure" id="expenditure_id">
                     <input class="transaction" type="checkbox" name="income" id="income_id">
                     <input type="text" name="exercise" value="{{exercise.id}}">
-                    <input type="text" name="month" value="{{current_month}}">
+                    <input type="text" name="month" value="{{current_month.id}}">
                   </li>
                 </ul>
               </div>
@@ -306,6 +306,10 @@
           {% endif %}
         </td>
         <td class="px-6 py-4">
+          <div class="hidden">
+            <input type="text" name="exercise" value="{{exercise.id}}">
+            <input type="text" name="month" value="{{current_month.id}}">
+          </div>
           <button class="font-medium text-indigo-600 dark:text-indigo-500 hover:underline"
           hx-get="{% url 'get-bank-operation' pk=operation.id %}"
           hx-target="#row-{{operation.id}}"
