@@ -30,7 +30,7 @@
               <input type="text" name="month" value="{{current_month.id}}">
             </div>
             <button class="font-medium text-indigo-600 dark:text-indigo-500 hover:underline"
-                hx-get="get-bank-operation/{{operation.id}}"
+                hx-get="{% url 'get-bank-operation' pk=operation.id exercise=exercise.id month=current_month.id %}"
                 hx-target="#row-{{operation.id}}"
                 hx-swap="outerHTML"
                 hx-trigger="edit"
@@ -48,5 +48,8 @@
                      trigger edit">
           Edit
         </button>
+        <button hx-get="{% url 'delete-bank-operation' exercise=exercise.id month=current_month.id pk=operation.id %}" hx-target="body" hx-swap="innerHTML" hx-push-url="true">
+            Supprimer
+          </button>
           </td>
         </tr>

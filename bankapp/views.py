@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import *
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from enterprise.models import Exercise
+from enterprise.models import *
 
 
 # @login_required(redirect_field_name="bank-home")
@@ -27,11 +27,15 @@ def bank_home(request):
     }
     return render(request, 'bank/bankhome.html', context)
 
-def search_bank_operation(request):
+def search_bank_operation(request, month=None, exercise=None):
     if request.method == 'POST':
         target = request.POST.get('search')
-        operations = BankOperation.objects.filter(wording__contains=target)
-        context = {'operations': operations}
+        operations = BankOperation.objects.filter(wording__contains=target, month__year=exercise, month_id=month)
+        context = {
+        'operations': operations, 
+        'current_month': Month.objects.get(pk=month),
+        'exercise': Exercise.objects.get(pk=exercise)
+        }
         return render(request, 'bank/bank_operation_search.html', context)
 
 def bank_operation_views(request, month=None, exercise=None):
@@ -68,7 +72,7 @@ def bank_operation_detail(request, pk):
 # @login_required(redirect_field_name="add-bank-operation")
 from .forms import BankOperationForm
 
-def add_bank_operation(request):
+def add_bank_operation(request, month=None, year=None):
     if request.method == 'POST':
         form = BankOperationForm(request.POST)
         print(form)
@@ -152,25 +156,32 @@ def add_bank_operation(request):
                 'operations': operations,
             }
             return redirect('bank-operation-views', month=request.POST.get('month'), exercise=request.POST.get('exercise'))
-    else:
-        form = BankOperationForm()
+        
+
+def add_bank_operation_views(request, month, year):
+    form = BankOperationForm()
 
     context = {
         'page_title': 'Opération bancaire',
         'form': form,
-        'banks': BankAccount.objects.all()
+        'banks': BankAccount.objects.all(),
+        'current_month': Month.objects.get(pk=month),
+        'exercise': Exercise.objects.get(pk=exercise),
     }
     return render(request, 'bank/add_bank_operation.html', context)
 
-def get_bank_operation(request, pk=None):
+def get_bank_operation(request, pk=None, month=None, exercise=None):
         operation = get_object_or_404(BankOperation, pk=pk)
         print(operation.wording)
         context = {
         'operation': operation,
+        'current_month': Month.objects.get(pk=month),
+        'exercise': Exercise.objects.get(pk=exercise),
         }
         return render(request, 'bank/update_bank_operation.html', context)
 
-def delete_operation(request, month=None, exercise=None, pk=None):
+def delete_bank_operation(request, month=None, exercise=None, pk=None):
+    month = Month.objects.get(pk=month)
     operation = BankOperation.objects.get(pk=pk)
     if operation:
         operation.delete()
@@ -192,10 +203,13 @@ def update_bank_operation(request):
     else:
         return redirect('bank-home')
 
-def return_bank_row(request, pk):
+def return_bank_row(request, pk, month=None, exercise=None):
     operation = BankOperation.objects.get(pk=pk)
     context = {
-    'operation': operation
+    'operation': operation,
+    'current_month': Month.objects.get(pk=month),
+    'exercise': Exercise.objects.get(pk=exercise)
+
     }
     return render(request, 'bank/row_bank.html', context)
 
