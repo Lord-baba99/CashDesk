@@ -9,7 +9,7 @@
 	<div class="grid grid-col-2 lg:grid-cols-6 md:grid-cols-3 gap-4">
 		{% for exercise in exercises %}
 		<div class="bg-indigo-400 text-white font-bold">
-			<p><a hx-get="{% url 'bank-operation-views' exercise=exercise.id month=f_month %}" hx-target="body" hx-swap="innerHTML">{{exercise.year}}</a></p>
+			<p><a hx-get="{% url 'bank-operation-views' %}?exercise={{exercise.id}}&month={{f_month.id}}" hx-target="body" hx-swap="innerHTML">{{exercise.year}}</a></p>
 		</div>
 		{% empty %}
 		<div class="col-span-2 lg:col-span-6 md:col-span-3">

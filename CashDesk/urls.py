@@ -6,6 +6,7 @@ from . views import *
 import cashdeskapp.urls
 import bankapp.urls
 import accounts.urls
+import enterprise.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,6 +14,7 @@ urlpatterns = [
     path('caisse/', include(cashdeskapp.urls)),
     path('banque/', include(bankapp.urls)),
     path('account/', include(accounts.urls)),
+    path('settings/', include(enterprise.urls)),
 ]
 
 if settings.DEBUG:

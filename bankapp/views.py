@@ -2,9 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import *
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from enterprise.models import *
-
+from urllib.parse import urlencode
+from django.urls import reverse
+from .forms import BankOperationForm
 
 # @login_required(redirect_field_name="bank-home")
 def bank_home(request):
@@ -38,21 +40,24 @@ def search_bank_operation(request, month=None, exercise=None):
         }
         return render(request, 'bank/bank_operation_search.html', context)
 
-def bank_operation_views(request, month=None, exercise=None):
+def bank_operation_views(request, **kwargs):
     """
     Show up all bank operations according to months and years
     param: month = str --> the default month
     param: year = int --> the current year
     """
     # getting the current month to show up the operations view
-    c_month = Month.objects.get(name__icontains=month)
+    month = request.GET.get('month')
+    exercise = request.GET.get('exercise')
+    print(exercise, month)
+    c_month = Month.objects.get(id=month)
     if request.POST:
         c_month_id = request.POST.get('c_month_id')
         c_month = Month.objects.filter(id=c_month_id)
     
     context = {
     'page_title': 'Opérations bancaires',
-    'operations': BankOperation.objects.filter(month__name__icontains=c_month, month__year=exercise),
+    'operations': BankOperation.objects.filter(month_id=c_month.id, month__year=exercise),
     'banks': BankAccount.objects.all(),
     'exercise': Exercise.objects.get(id=exercise),
     'months': Month.objects.filter(year_id=exercise),
@@ -63,88 +68,49 @@ def bank_operation_views(request, month=None, exercise=None):
 # @login_required(redirect_field_name="bank-operation-detail")
 def bank_operation_detail(request, pk):
     operation = BankOperation.objects.get(pk=pk)
+    print('month :', request.GET.get('month'), ' exercise :', request.GET.get('exercise'))
     context = {
         "operation": operation,
-        "page_title": f"Piece de banque : {operation.reference}"
+        "page_title": f"Piece de banque : {operation.reference}",
+        "month": request.GET.get('month'),
+        "exercise": request.GET.get('exercise'),
     }
-    return render(request, 'bank_operation_detail.html', context)
+    return render(request, 'bank/bank_operation_detail.html', context)
 
 # @login_required(redirect_field_name="add-bank-operation")
-from .forms import BankOperationForm
-
 def add_bank_operation(request, month=None, year=None):
     if request.method == 'POST':
         form = BankOperationForm(request.POST)
+        print(request.POST)
         print(form)
         if form.is_valid():
             print('form valid')
-            # Les données du formulaire sont valides
-            # Récupérer les valeurs des champs du formulaire
-            month = form.cleaned_data['month']
-            bank = form.cleaned_data['bank']
-            user = form.cleaned_data['user']
-            reference = form.cleaned_data['reference']
-            wording = form.cleaned_data['wording']
-            done_date = form.cleaned_data['done_date']
-            expenditure = form.cleaned_data['expenditure']
-            income = form.cleaned_data['income']
-            amount_digit = form.cleaned_data['amount_digit']
-            amount_letter = form.cleaned_data['amount_letter']
-            depositor = form.cleaned_data['depositor']
-            withdrawer = form.cleaned_data['withdrawer']
-            # Traitez les autres champs du formulaire
-
-            if income:
-                print('income')
-            # Créer l'objet BankOperation avec les données du formulaire
-                operation = BankOperation.objects.create(
-                    month=month,
-                    bank=bank,
-                    user=user,
-                    reference=reference,
-                    wording=wording,
-                    done_date=done_date,
-                    income=income,
-                    amount_digit=amount_digit,
-                    amount_letter=amount_letter,
-                    depositor=depositor,
-                )
-                # Enregistrer l'objet BankOperation dans la base de données
-                operation.save()
-
-            elif expenditure:
-                print('expenditure')
-                operation = BankOperation.objects.create(
-                    month=month,
-                    bank=bank,
-                    user=user,
-                    reference=reference,
-                    wording=wording,
-                    done_date=done_date,
-                    expenditure=expenditure,
-                    amount_digit=amount_digit,
-                    amount_letter=amount_letter,
-                    withdrawer=withdrawer,
-                )
-
-                # Enregistrer l'objet BankOperation dans la base de données
-                operation.save()
+            form.save()
 
             # Rediriger ou afficher un message de succès
             if request.POST.get('modal'):
                 operations = BankOperation.objects.all()
                 exercise = Exercise.objects.get(
                     id=request.POST.get('exercise'))
+                month = Month.objects.get(id=request.POST.get('month'))
+                # context = {
+                #     'success': 'Formulaire enregistré avec succès !',
+                #     'page_title': 'Opération bancaire',
+                #     'banks': BankAccount.objects.all(),
+                #     'operations': operations,
+                #     'exercise': exercise,
+                #     'months': Month.objects.filter(year_id=exercise.id),
+                #     'current_month': Month.objects.get(id=month.id, year=exercise.id)
+                # }
+                
                 context = {
-                    'success': 'Formulaire enregistré avec succès !',
-                    'page_title': 'Opération bancaire',
-                    'banks': BankAccount.objects.all(),
-                    'operations': operations,
-                    'exercise': exercise,
-                    'months': Month.objects.filter(year_id=request.POST.get('exercise')),
-                    'current_month': Month.objects.get(name__contains=month, year=exercise.id)
+                    'current_month': request.POST.get('month'),
+                    'exercise': request.POST.get('exercise'),
+                    'success': 'Formulaire enregistré avec succès !'
                 }
-                return render(request, 'bank/bank_operation.html', context)
+                query_string = urlencode(context)
+                redirect_url = reverse('bank-operation-views') + '?' + query_string
+                return HttpResponseRedirect(redirect_url)
             
         else:
             print('form invalid')
@@ -152,10 +118,13 @@ def add_bank_operation(request, month=None, year=None):
             context = {
                 'Error': 'Formulaire invalide !',
                 'page_title': 'Opération bancaire',
-                'banks': BankAccount.objects.all(),
-                'operations': operations,
+                'exercise': request.POST.get('exercise'),
+                'current_month': request.POST.get('month'),
             }
-            return redirect('bank-operation-views', month=request.POST.get('month'), exercise=request.POST.get('exercise'))
+
+            query_string = urlencode(context)
+            redirect_url = reverse('bank-operation-views') + '?' + query_string
+            return HttpResponseRedirect(redirect_url)
         
 
 def add_bank_operation_views(request, month, year):
@@ -175,17 +144,24 @@ def get_bank_operation(request, pk=None, month=None, exercise=None):
         print(operation.wording)
         context = {
         'operation': operation,
-        'current_month': Month.objects.get(pk=month),
-        'exercise': Exercise.objects.get(pk=exercise),
+        'current_month': month,
+        'exercise': exercise,
         }
         return render(request, 'bank/update_bank_operation.html', context)
 
 def delete_bank_operation(request, month=None, exercise=None, pk=None):
-    month = Month.objects.get(pk=month)
     operation = BankOperation.objects.get(pk=pk)
     if operation:
         operation.delete()
-    return redirect('bank-operation-views', month=month, exercise=exercise)
+
+    context = {
+        'current_month': month,
+        'exercise': exercise,
+        'action': f"L'operation {operation} a été supprimée avec succès !",
+    }
+    query_string = urlencode(context)
+    redirect_url = reverse('bank-operation-views') + '?' + query_string
+    return HttpResponseRedirect(redirect_url)
 
 def update_bank_operation(request):
     if request.POST:
@@ -197,18 +173,20 @@ def update_bank_operation(request):
         operation.wording = request.POST.get('wording')
         operation.save(update_fields=["wording"])
         context = {
-        'operation': operation
+        'operation': operation,
+        'current_month': request.POST.get('current_month'),
+        'exercise': request.POST.get('exercise'),
         }
         return render(request, 'bank/row_bank.html', context)
     else:
-        return redirect('bank-home')
+        return redirect('bank-operation-views')
 
 def return_bank_row(request, pk, month=None, exercise=None):
     operation = BankOperation.objects.get(pk=pk)
     context = {
     'operation': operation,
-    'current_month': Month.objects.get(pk=month),
-    'exercise': Exercise.objects.get(pk=exercise)
+    'current_month': month,
+    'exercise': exercise,
 
     }
     return render(request, 'bank/row_bank.html', context)

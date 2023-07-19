@@ -3,7 +3,7 @@ from . views import *
 
 urlpatterns = [
 	path('', bank_home, name='bank-home'),
-	path('bank-operation-views/<int:exercise>/<str:month>/', bank_operation_views, name='bank-operation-views'),
+	path('bank-operation-views/', bank_operation_views, name='bank-operation-views'),
 	path('add-bank-operation/', add_bank_operation, name='add-bank-operation'),
 	path('delete-bank-operation/<int:exercise>/<int:month>/<int:pk>', delete_bank_operation, name='delete-bank-operation'),
 	path('update-bank-operation/', update_bank_operation, name='update-bank-operation'),

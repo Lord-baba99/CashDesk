@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <p>
+        <button class="bg-indigo-800 px-4 py-2 text-white font-bold w-auto" hx-get="{% url 'bank-operation-views' %}?month={{month}}&exercise={{exercise}}" hx-target="body"
+        hx-swap="innerHTML"><i class="fi-sr-caret-square-left">Retour</i></button>
+        <button onclick="printPage()">
+        imprimer
+        </button>
+    </p>
+    <div class="flex flex-col print:h-[29.7cm] print:w-[21cm] print:bg-white print:absolute top-0 left-0 mt-4"
+        id="print-field">
+        <div>
+            <div class="flex justify-end print:justify-between">
+                <div class="logo block h-20 w-20 hidden print:block">
+                    <img src="{{ enterprise.logo.url }}">
+                </div>
+                <div class="flex print:flex font-bold items-center">
+                    <p class="py-2 mx-2">Montant ( en chiffre ) :</p>
+                    <p class="md:w-40 h-fit print:border-b-2 border-b-2 border-indigo-500 print:border-indigo-500 px-4 py-1">
+                        {% if operation.income_amount %}
+                            {{operation.income_amount}} Fcfa
+                            {% elif operation.expenditure_amount %}
+                            {{operation.expenditure_amount}} Fcfa
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center ">
+                    <p class="text-2xl font-bold">Piece de Banque</p>
+                    <div>
+                        <p>Référence:</p>
+                        <p>{{operation.reference}}</p>
+                        <p>{% if operation.income %}
+                            <span class="italic">Récette</span>
+                        {% else %}
+                            <span class="italic">Dépense</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="font-bold">
+                <div class="flex mt-4">
+                    <p class="me-2 w-44">Montant (en lettre ) :</p>
+                    <p class="px-2 capitalize border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.amount_letter}}</p>
+                </div>
+                <div class="flex mt-4">
+                    {% if operation.income %}
+                        <p class="me-2 w-44">Le déposant :</p>
+                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.depositor}}</p>
+                    {% else %}
+                        <p class="me-2 w-44">Le rétirant :</p>
+                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.withdrawer}}</p>
+                    {% endif %}
+                </div>
+                <div class="flex mt-4">
+                    <p class="me-2 w-44">Libellé de l'opération :</p>
+                    <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.wording}}</p>
+                </div>
+            </div>
+            <div class="flex justify-end mt-4 italic">
+                <p>Fait à Pointe Noire le {{operation.done_date|date:"d/m/Y"}}</p>
+            </div>
+            <div class="flex justify-around mt-4">
+                <div class="bg-gray-200 w-80 border-2 border-black">
+                    {% if operation.income %}
+                        <p class="border-b border-black text-center font-bold">Pour le déposant </p>
+                        <div class="flex flex-col justify-between h-28">
+                            <p class="text-center">(Signature et Nom du déposant)</p>
+                            <p class="font-bold text-center">{{operation.depositor}}</p>
+                        </div>
+                    {% else %}
+                        <p class="border-b border-black text-center font-bold">Pour le rétirant </p>
+                        <div class="flex flex-col justify-between h-28">
+                            <p class="text-center">(Signature et Nom du rétirant)</p>
+                            <p class="font-bold text-center">{{operation.withdrawer}}</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="bg-gray-200 w-80 border-2 border-black">
+                    <p class="border-b border-black text-center font-bold">Pour <span class="uppercase">Maison Marta Consulting</span> </p>
+                    <div class="flex flex-col justify-between h-28">
+                        <p class="text-center">(Signature et Nom de la caissière)</p>
+                        <p class="font-bold text-center">{{user.last_name}} {{user.first_name}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="border border-dotted border-black my-8">
+        <div class="hidden print:block">
+            <div class="flex justify-end print:justify-between">
+                <div class="logo block h-20 w-20 hidden print:block">
+                    <img src="{{ enterprise.logo.url }}">
+                </div>
+                <div class="flex print:flex font-bold items-center">
+                    <p class="py-2 mx-2">Montant ( en chiffre ) :</p>
+                    <p class="md:w-40 h-fit print:border-b-2 border-b-2 border-indigo-500 print:border-indigo-500 px-4 py-1">
+                        {% if operation.income_amount %}
+                            {{operation.income_amount}} Fcfa
+                            {% elif operation.expenditure_amount %}
+                            {{operation.expenditure_amount}} Fcfa
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center ">
+                    <p class="text-2xl font-bold">Piece de Banque</p>
+                    <div>
+                        <p>Référence:</p>
+                        <p>{{operation.reference}}</p>
+                        <p>{% if operation.income %}
+                            <span class="italic">Récette</span>
+                        {% else %}
+                            <span class="italic">Dépense</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="font-bold">
+                <div class="flex mt-4">
+                    <p class="me-2 w-44">Montant (en lettre ) :</p>
+                    <p class="px-2 capitalize border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.amount_letter}}</p>
+                </div>
+                <div class="flex mt-4">
+                    {% if operation.income %}
+                        <p class="me-2 w-44">Le déposant :</p>
+                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.depositor}}</p>
+                    {% else %}
+                        <p class="me-2 w-44">Le rétirant :</p>
+                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.withdrawer}}</p>
+                    {% endif %}
+                </div>
+                <div class="flex mt-4">
+                    <p class="me-2 w-44">Libellé de l'opération :</p>
+                    <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.wording}}</p>
+                </div>
+            </div>
+            <div class="flex justify-end mt-4 italic">
+                <p>Fait à Pointe Noire le {{operation.done_date|date:"d/m/Y"}}</p>
+            </div>
+            <div class="flex justify-around mt-4">
+                <div class="bg-gray-200 w-80 border-2 border-black">
+                    {% if operation.income %}
+                        <p class="border-b border-black text-center font-bold">Pour le déposant </p>
+                        <div class="flex flex-col justify-between h-28">
+                            <p class="text-center">(Signature et Nom du déposant)</p>
+                            <p class="font-bold text-center">{{operation.depositor}}</p>
+                        </div>
+                    {% else %}
+                        <p class="border-b border-black text-center font-bold">Pour le rétirant </p>
+                        <div class="flex flex-col justify-between h-28">
+                            <p class="text-center">(Signature et Nom du rétirant)</p>
+                            <p class="font-bold text-center">{{operation.withdrawer}}</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="bg-gray-200 w-80 border-2 border-black">
+                    <p class="border-b border-black text-center font-bold">Pour <span class="uppercase">Maison Marta Consulting</span> </p>
+                    <div class="flex flex-col justify-between h-28">
+                        <p class="text-center">(Signature et Nom de la caissière)</p>
+                        <p class="font-bold text-center">{{user.last_name}} {{user.first_name}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock content %}
