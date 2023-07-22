@@ -1,11 +1,24 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-    <p>
-        <button class="bg-indigo-800 px-4 py-2 text-white font-bold w-auto" hx-get="{% url 'bank-operation-views' %}?month={{month}}&exercise={{exercise}}" hx-target="body"
-        hx-swap="innerHTML"><i class="fi-sr-caret-square-left">Retour</i></button>
-        <button onclick="printPage()">
+    <p class="flex justify-between items-center">
+        <button class="bg-indigo-800 px-4 py-2 text-white font-bold w-auto rounded-lg align-middle" hx-get="{% url 'bank-operation-views' %}?current_month={{month}}&exercise={{exercise}}" hx-target="body"
+        hx-swap="innerHTML">
+        <span class="inline-block">
+            <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
+  </svg>
+        </span>
+        Retour
+    </button>
+        <button onclick="printPage()" class="px-4 py-2 bg-indigo-800 rounded-lg font-medium text-white align-middle">
         imprimer
+        <span class="inline-block">
+            <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M5 20h10a1 1 0 0 0 1-1v-5H4v5a1 1 0 0 0 1 1Z"/>
+    <path d="M18 7H2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2v-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-1-2V2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3h14Z"/>
+  </svg>
+        </span>
         </button>
     </p>
     <div class="flex flex-col print:h-[29.7cm] print:w-[21cm] print:bg-white print:absolute top-0 left-0 mt-4"
@@ -17,7 +30,7 @@
                 </div>
                 <div class="flex print:flex font-bold items-center">
                     <p class="py-2 mx-2">Montant ( en chiffre ) :</p>
-                    <p class="md:w-40 h-fit print:border-b-2 border-b-2 border-indigo-500 print:border-indigo-500 px-4 py-1">
+                    <p class="md:w-40 h-fit print:border-b-2 border-b-2 border-indigo-500 print:border-gray-800 px-4 py-1">
                         {% if operation.income_amount %}
                             {{operation.income_amount}} Fcfa
                             {% elif operation.expenditure_amount %}
@@ -42,20 +55,20 @@
             <div class="font-bold">
                 <div class="flex mt-4">
                     <p class="me-2 w-44">Montant (en lettre ) :</p>
-                    <p class="px-2 capitalize border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.amount_letter}}</p>
+                    <p class="px-2 capitalize border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-gray-800">{{operation.amount_letter}}</p>
                 </div>
                 <div class="flex mt-4">
                     {% if operation.income %}
                         <p class="me-2 w-44">Le déposant :</p>
-                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.depositor}}</p>
+                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-gray-800">{{operation.depositor}}</p>
                     {% else %}
                         <p class="me-2 w-44">Le rétirant :</p>
-                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.withdrawer}}</p>
+                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-gray-800">{{operation.withdrawer}}</p>
                     {% endif %}
                 </div>
                 <div class="flex mt-4">
                     <p class="me-2 w-44">Libellé de l'opération :</p>
-                    <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.wording}}</p>
+                    <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-gray-800">{{operation.wording}}</p>
                 </div>
             </div>
             <div class="flex justify-end mt-4 italic">
@@ -86,7 +99,7 @@
                 </div>
             </div>
         </div>
-        <hr class="border border-dotted border-black my-8">
+        <hr class="print:border print:border-dotted print:border-black print:my-8">
         <div class="hidden print:block">
             <div class="flex justify-end print:justify-between">
                 <div class="logo block h-20 w-20 hidden print:block">
@@ -94,7 +107,7 @@
                 </div>
                 <div class="flex print:flex font-bold items-center">
                     <p class="py-2 mx-2">Montant ( en chiffre ) :</p>
-                    <p class="md:w-40 h-fit print:border-b-2 border-b-2 border-indigo-500 print:border-indigo-500 px-4 py-1">
+                    <p class="md:w-40 h-fit print:border-b-2 border-b-2 border-indigo-500 print:border-gray-800 px-4 py-1">
                         {% if operation.income_amount %}
                             {{operation.income_amount}} Fcfa
                             {% elif operation.expenditure_amount %}
@@ -119,20 +132,20 @@
             <div class="font-bold">
                 <div class="flex mt-4">
                     <p class="me-2 w-44">Montant (en lettre ) :</p>
-                    <p class="px-2 capitalize border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.amount_letter}}</p>
+                    <p class="px-2 capitalize border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-gray-800">{{operation.amount_letter}}</p>
                 </div>
                 <div class="flex mt-4">
                     {% if operation.income %}
                         <p class="me-2 w-44">Le déposant :</p>
-                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.depositor}}</p>
+                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-gray-800">{{operation.depositor}}</p>
                     {% else %}
                         <p class="me-2 w-44">Le rétirant :</p>
-                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.withdrawer}}</p>
+                        <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-gray-800">{{operation.withdrawer}}</p>
                     {% endif %}
                 </div>
                 <div class="flex mt-4">
                     <p class="me-2 w-44">Libellé de l'opération :</p>
-                    <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-indigo-500">{{operation.wording}}</p>
+                    <p class="px-2 border-b-2 w-9/12 border-indigo-500 print:border-b-2 print:border-gray-800">{{operation.wording}}</p>
                 </div>
             </div>
             <div class="flex justify-end mt-4 italic">

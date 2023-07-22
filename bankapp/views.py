@@ -47,23 +47,38 @@ def bank_operation_views(request, **kwargs):
     param: year = int --> the current year
     """
     # getting the current month to show up the operations view
-    month = request.GET.get('month')
-    exercise = request.GET.get('exercise')
-    print(exercise, month)
-    c_month = Month.objects.get(id=month)
-    if request.POST:
-        c_month_id = request.POST.get('c_month_id')
-        c_month = Month.objects.filter(id=c_month_id)
     
-    context = {
-    'page_title': 'Opérations bancaires',
-    'operations': BankOperation.objects.filter(month_id=c_month.id, month__year=exercise),
-    'banks': BankAccount.objects.all(),
-    'exercise': Exercise.objects.get(id=exercise),
-    'months': Month.objects.filter(year_id=exercise),
-    'current_month': c_month,
-    }
-    return render(request, 'bank/bank_operation.html', context)
+    if request.POST:
+        month = request.POST.get('current_month')
+        exercise = request.POST.get('exercise')
+        target = request.POST.get('search')
+        
+        operations = BankOperation.objects.filter(wording__contains=target, month__year=exercise, month_id=month)
+        context = {
+        'operations': operations, 
+        'current_month': Month.objects.get(pk=month).id,
+        'exercise': Exercise.objects.get(pk=exercise),
+        }
+        return render(request, 'bank/search_bank_operation.html', context)
+
+    else:
+        month = request.GET.get('current_month')
+        exercise = request.GET.get('exercise')
+        print(month)
+        c_month = Month.objects.get(id=month)
+        operations = BankOperation.objects.filter(month_id=c_month.id, month__year=exercise)
+        context = {
+        'page_title': 'Opérations bancaires',
+        'operations': operations,
+        'banks': BankAccount.objects.all(),
+        'exercise': Exercise.objects.get(id=exercise),
+        'months': Month.objects.filter(year_id=exercise),
+        'current_month': c_month.id,
+        'month_name': c_month.name,
+        'reference': ReferenceGenerator.objects.last(),
+        }
+        print(c_month.id,' c_month')
+        return render(request, 'bank/bank_operation_table.html', context)
 
 # @login_required(redirect_field_name="bank-operation-detail")
 def bank_operation_detail(request, pk):
@@ -86,6 +101,11 @@ def add_bank_operation(request, month=None, year=None):
         if form.is_valid():
             print('form valid')
             form.save()
+            reference = ReferenceGenerator.objects.create(
+                initial='2MC',
+                ending_letter='B'
+                )
+            reference.save()
 
             # Rediriger ou afficher un message de succès
             if request.POST.get('modal'):
@@ -108,8 +128,10 @@ def add_bank_operation(request, month=None, year=None):
                     'exercise': request.POST.get('exercise'),
                     'success': 'Formulaire enregistré avec succès !'
                 }
+                print(request.POST.get('exercise'), request.POST.get('month'))
                 query_string = urlencode(context)
                 redirect_url = reverse('bank-operation-views') + '?' + query_string
+                print(redirect_url)
                 return HttpResponseRedirect(redirect_url)
             
         else:
@@ -147,6 +169,7 @@ def get_bank_operation(request, pk=None, month=None, exercise=None):
         'current_month': month,
         'exercise': exercise,
         }
+        print(exercise, 'exercise get-bank')
         return render(request, 'bank/update_bank_operation.html', context)
 
 def delete_bank_operation(request, month=None, exercise=None, pk=None):
@@ -177,6 +200,7 @@ def update_bank_operation(request):
         'current_month': request.POST.get('current_month'),
         'exercise': request.POST.get('exercise'),
         }
+        print(request.POST.get('current_month'), 'current_month')
         return render(request, 'bank/row_bank.html', context)
     else:
         return redirect('bank-operation-views')

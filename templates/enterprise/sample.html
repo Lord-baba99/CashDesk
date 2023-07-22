@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load compress %}
+{% load static %}
+<html lang="fr">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+      <script src="{% static 'flowbite/packages/flowbite.min.js' %}" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+      <script src="{% static 'htmx/htmx.min.js' %}"></script>
+      {% compress css %}
+      <link rel="stylesheet" href="{% static 'out/output.css' %}">
+   {% endcompress %}
+   <style>
+   
+   /* scrollbar */
+   /* width */
+   ::-webkit-scrollbar {
+   width: 5px;
+   height: 5px;
+   }
+   /* Track */
+   ::-webkit-scrollbar-track {
+   background: transparent;
+   }
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+   background: #888;
+   border-radius: .6rem;
+   }
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+   background: rgb(88, 80, 236);
+   }
+   </style>
+</head>
+<body>
+   {% block content %}
+   {% endblock content %}
+</body>

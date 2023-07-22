@@ -1,6 +1,16 @@
 from django.shortcuts import render, redirect
 from .forms import *
 from .models import *
+from django.http import HttpResponse, HttpResponseRedirect
+from urllib.parse import urlencode
+from django.urls import reverse
+
+def settings_view(request):
+	context = {
+		'page_title': 'Parametres'
+	}
+
+	return render(request, 'enterprise/settings.html', context)
 
 def create_month(request, month=None, exercise=None):
 	if request.POST:
@@ -16,4 +26,16 @@ def create_month(request, month=None, exercise=None):
 				form.save()
 		else:
 			print("form is invalid")
-	return redirect('bank-operation-views', month=month, exercise=exercise)
+
+	context = {
+		'current_month':month,
+		'exercise':exercise,
+	}
+
+	print(context)
+	query_string = urlencode(context)
+	redirect_url = reverse('bank-operation-views') + '?' + query_string
+	return HttpResponseRedirect(redirect_url)
+
+def samples(request):
+	return render(request, 'enterprise/user_profile.html')

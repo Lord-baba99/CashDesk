@@ -1,17 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div>
-	<div>
-		<h1 class="font-medium bg-indigo-400 text-white">Exercices</h1>
-		<button>Ajouter un Exercice</button>
+<div class="w-full">
+	<div class="flex justify-center py-4">
+		<h1 class="font-medium bg-indigo-400 text-white w-[50vw] align-middle
+text-xl font-bold">Exercices</h1>
 	</div>
-	<div class="grid grid-col-2 lg:grid-cols-6 md:grid-cols-3 gap-4">
+	<div class="flex">
+		<div class="md:w-[40%] me-4 shadow-lg bg-white">
+			<div>
+				<button class="bg-indigo-800 text-white font-medium rounded-lg py-2 px-3">Ajouter un Exercice</button>
+				<div>
+					<p>
+						Vous avez <span class="text-indigo-800 font-bold">2 Exercices</span>
+					</p>
+				</div>
+			</div>
+			<div>
+				<p>Vous avez au total:</p>
+				<h4>15 operations</h4>
+			</div>
+		</div>
+		<div class="grid grid-cols-2 lg:grid-cols-6 md:grid-cols-3 gap-4 shadow-lg bg-white w-full">
+			<div class="col-span-2 lg:col-span-6 md:col-span-3">
+			<div>
+				<button class="bg-indigo-800 text-white font-medium rounded-lg py-2 px-3">Ajouter un Exercice</button>
+				<div>
+					<p>
+						Vous avez <span class="text-indigo-800 font-bold">2 Exercices</span>
+					</p>
+				</div>
+			</div>
+			<div>
+				<p>Vous avez au total:</p>
+				<h4>15 operations</h4>
+			</div>
+		</div>
 		{% for exercise in exercises %}
-		<div class="bg-indigo-400 text-white font-bold">
-			<p><a hx-get="{% url 'bank-operation-views' %}?exercise={{exercise.id}}&month={{f_month.id}}" hx-target="body" hx-swap="innerHTML">{{exercise.year}}</a></p>
+		<div >
+			<button hx-get="{% url 'bank-operation-views' %}?exercise={{exercise.id}}&current_month={{f_month.id}}" hx-target="body" hx-swap="innerHTML" class="bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg">{{exercise.year}}</button>
 		</div>
 		{% empty %}
+		</div>
 		<div class="col-span-2 lg:col-span-6 md:col-span-3">
 			<p>Aucun exercice n'a été crée pour l'instant !</p>
 		</div>
