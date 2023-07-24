@@ -73,3 +73,33 @@ class ReferenceGenerator(models.Model):
 @receiver(pre_save, sender=ReferenceGenerator)
 def pre_save_reference_generator(sender, instance, **kwargs):
     instance.name_formator()
+
+# statitistic
+
+class BankTotalExpenditure(models.Model):
+    month_amount = models.BigIntegerField(default=0)
+    month = models.ForeignKey(Month, on_delete=models.CASCADE)
+
+    def sum(self):
+        operations = BankOperation.objects.filter(month_id=self.month, expenditure=True)
+        total = 0
+        for operation in operations:
+            total += operation.expenditure_amount
+        self.month_amount = total
+
+    def __str__(self):
+        return f'Total dépense {self.month}'
+
+class BankTotalIncome(models.Model):
+    month_amount = models.BigIntegerField(default=0)
+    month = models.ForeignKey(Month, on_delete=models.CASCADE)
+
+    def sum(self):
+        operations = BankOperation.objects.filter(month_id=self.month, income=True)
+        total = 0
+        for operation in operations:
+            total += operation.income_amount
+        self.month_amount = total
+
+    def __str__(self):
+        return f'Total récette {self.month}'

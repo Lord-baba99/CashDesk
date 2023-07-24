@@ -4,6 +4,15 @@ from .models import *
 from django.http import HttpResponse, HttpResponseRedirect
 from urllib.parse import urlencode
 from django.urls import reverse
+from bankapp.models import *
+
+def update():
+    bank_total_incomes = BankTotalIncome.objects.all()
+    bank_total_expenditures = BankTotalExpenditure.objects.all()
+    for bank_total_income in bank_total_incomes:
+        bank_total_income.sum()
+    for bank_total_expenditure in bank_total_expenditures:
+        bank_total_expenditure.sum()
 
 def settings_view(request):
 	context = {
@@ -24,6 +33,12 @@ def create_month(request, month=None, exercise=None):
 					all_ready_exist = True
 			if not all_ready_exist:
 				form.save()
+				BankTotalExpenditure.objects.create(
+					month=Month.objects.last().id
+				).save()
+				BankTotalIncome.objects.create(
+					month=Month.objects.last().id
+				).save()
 		else:
 			print("form is invalid")
 

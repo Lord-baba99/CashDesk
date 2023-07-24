@@ -4,13 +4,15 @@ from .forms import *
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from enterprise.models import *
+from enterprise.views import update
 from urllib.parse import urlencode
 from django.urls import reverse
 from .forms import BankOperationForm
+from .models import *
 
 # @login_required(redirect_field_name="bank-home")
 def bank_home(request):
-
+    update()
     # getting the first month as default for operation views
     month = Month.objects.first()
     if month:
@@ -46,6 +48,7 @@ def bank_operation_views(request, **kwargs):
     param: month = str --> the default month
     param: year = int --> the current year
     """
+    update()
     # getting the current month to show up the operations view
     
     if request.POST:
@@ -109,10 +112,10 @@ def add_bank_operation(request, month=None, year=None):
 
             # Rediriger ou afficher un message de succès
             if request.POST.get('modal'):
-                operations = BankOperation.objects.all()
-                exercise = Exercise.objects.get(
-                    id=request.POST.get('exercise'))
-                month = Month.objects.get(id=request.POST.get('month'))
+                # operations = BankOperation.objects.all()
+                # exercise = Exercise.objects.get(
+                #     id=request.POST.get('exercise'))
+                # month = Month.objects.get(id=request.POST.get('month'))
                 # context = {
                 #     'success': 'Formulaire enregistré avec succès !',
                 #     'page_title': 'Opération bancaire',
@@ -157,7 +160,7 @@ def add_bank_operation_views(request, month, year):
         'form': form,
         'banks': BankAccount.objects.all(),
         'current_month': Month.objects.get(pk=month),
-        'exercise': Exercise.objects.get(pk=exercise),
+        'exercise': Exercise.objects.get(pk=year),
     }
     return render(request, 'bank/add_bank_operation.html', context)
 
@@ -239,3 +242,4 @@ def delete_multiple_bank_operation(request):
             bank_operation = BankOperation.objects.get(pk=pk)
             bank_operation.delete()
         return redirect('bank-home')
+
