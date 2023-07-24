@@ -3,8 +3,9 @@ from accounts.models import Person
 from django.urls import reverse
 from enterprise.models import *
 from datetime import datetime
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+from django.db.models import Avg, Max, Min, Sum
 
 
 class BankAccount(models.Model):
@@ -70,9 +71,9 @@ class ReferenceGenerator(models.Model):
         self._incrementor()  # Ajouter des parenthèses ici pour appeler la méthode
         super().save(*args, **kwargs)
 
-@receiver(pre_save, sender=ReferenceGenerator)
-def pre_save_reference_generator(sender, instance, **kwargs):
-    instance.name_formator()
+# @receiver(pre_save, sender=ReferenceGenerator)
+# def pre_save_reference_generator(sender, instance, **kwargs):
+#     instance.name_formator()
 
 # statitistic
 
@@ -82,10 +83,10 @@ class BankTotalExpenditure(models.Model):
 
     def sum(self):
         operations = BankOperation.objects.filter(month_id=self.month, expenditure=True)
-        total = 0
-        for operation in operations:
-            total += operation.expenditure_amount
-        self.month_amount = total
+        amount_sum = operations.aggregate(Sum('expenditure_amount'))
+        if amount_sum['expenditure_amount__sum']:
+            self.month_amount = amount_sum['expenditure_amount__sum']
+            self.save()
 
     def __str__(self):
         return f'Total dépense {self.month}'
@@ -96,10 +97,65 @@ class BankTotalIncome(models.Model):
 
     def sum(self):
         operations = BankOperation.objects.filter(month_id=self.month, income=True)
-        total = 0
-        for operation in operations:
-            total += operation.income_amount
-        self.month_amount = total
+        amount_sum = operations.aggregate(Sum('income_amount'))
+        if amount_sum['income_amount__sum']:
+            self.month_amount = amount_sum['income_amount__sum']
+            self.save()
 
     def __str__(self):
         return f'Total récette {self.month}'
+
+
+class BankDeferrerOperation(models.Model):
+    month_amount = models.BigIntegerField(default=0)
+    month = models.ForeignKey(Month, on_delete=models.CASCADE)
+    initial = models.BigIntegerField(default=0)
+    finall = models.BigIntegerField(default=0)
+
+    def initialise(self):
+        try:
+            month_before = Month.objects.filter(id__lt=self.month.id).last()
+        except Month.DoesNotExist:
+            month_before = None
+        print(month_before)
+        if month_before:
+            defer_before = BankDeferrerOperation.objects.get(month_id=month_before.id)
+            print(defer_before.finall)
+            self.initial = defer_before.finall
+
+    def update_finall(self, total):
+        self.finall = total
+        self.save()
+
+    def save(self, *args, **kwargs):
+        self.initialise()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'Report du mois de {self.month}'
+
+# Signal post_save pour mettre à jour BankDeferrerOperation lorsque BankTotalOperation est enregistrée ou mise à jour
+@receiver(post_save, sender='bankapp.BankTotalOperation')
+def update_bank_deferrer_operation(sender, instance, **kwargs):
+    try:
+        bank_deferrer_operation = BankDeferrerOperation.objects.get(month_id=instance.month_id)
+        total = instance.month_amount
+        bank_deferrer_operation.update_finall(total)
+    except BankDeferrerOperation.DoesNotExist:
+        pass
+
+class BankTotalOperation(models.Model):
+    month_amount = models.BigIntegerField(default=0)
+    month = models.ForeignKey(Month, on_delete=models.CASCADE)
+
+    def calc(self):
+        defer = BankDeferrerOperation.objects.get(month_id=self.month).initial
+        total_income = BankTotalIncome.objects.get(month_id=self.month).month_amount
+        total_expenditure = BankTotalExpenditure.objects.get(month_id=self.month).month_amount
+        print('(model) total depense ', total_income)
+        result = defer + total_income - total_expenditure
+        self.month_amount = result
+        self.save()
+
+    def __str__(self):
+        return f'Total solde mois de {self.month}'

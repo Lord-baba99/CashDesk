@@ -13,12 +13,12 @@ from .models import *
 # @login_required(redirect_field_name="bank-home")
 def bank_home(request):
     update()
-    # getting the first month as default for operation views
-    month = Month.objects.first()
+    # getting the last month as default for operation views
+    month = Month.objects.last()
     if month:
         f_month = month
     else:
-        f_month = 'aucun'
+        f_month = 0
 
     # getting all exercise
     exercises = Exercise.objects.all()
@@ -32,6 +32,7 @@ def bank_home(request):
     return render(request, 'bank/bankhome.html', context)
 
 def search_bank_operation(request, month=None, exercise=None):
+    update()
     if request.method == 'POST':
         target = request.POST.get('search')
         operations = BankOperation.objects.filter(wording__contains=target, month__year=exercise, month_id=month)
@@ -68,19 +69,51 @@ def bank_operation_views(request, **kwargs):
         month = request.GET.get('current_month')
         exercise = request.GET.get('exercise')
         print(month)
-        c_month = Month.objects.get(id=month)
-        operations = BankOperation.objects.filter(month_id=c_month.id, month__year=exercise)
+        if month:
+            c_month = Month.objects.get(id=month)
+            operations = BankOperation.objects.filter(month_id=c_month.id, month__year=exercise)
+            try:
+                total_expenditure = BankTotalExpenditure.objects.get(month=month).month_amount
+            except BankTotalExpenditure.DoesNotExist:
+                total_expenditure = 0
+
+            try:
+                total_income = BankTotalIncome.objects.get(month=month).month_amount
+            except BankTotalIncome.DoesNotExist:
+                total_income = 0
+            try:
+                total_operation = BankTotalOperation.objects.get(month=month).month_amount
+            except BankTotalOperation.DoesNotExist:
+                total_operation = 0
+
+            print('total depense :', total_expenditure)
+            print(c_month.id,' c_month')
+
+            context = {
+            'page_title': 'Opérations bancaires',
+            'operations': operations,
+            'banks': BankAccount.objects.all(),
+            'exercise': Exercise.objects.get(id=exercise),
+            'months': Month.objects.filter(year_id=exercise),
+            'current_month': c_month.id,
+            'month_name': c_month.name,
+            'reference': ReferenceGenerator.objects.last(),
+            'total_expenditure': total_expenditure,
+            'total_income': total_income,
+            'total_operation': total_operation,
+            }
+            return render(request, 'bank/bank_operation_table.html', context)
+
+        if Month.objects.all().count()==0:
+            current_month = 0
+        else:
+            current_month = Month.objects.all().last()
+        
         context = {
         'page_title': 'Opérations bancaires',
-        'operations': operations,
-        'banks': BankAccount.objects.all(),
         'exercise': Exercise.objects.get(id=exercise),
-        'months': Month.objects.filter(year_id=exercise),
-        'current_month': c_month.id,
-        'month_name': c_month.name,
-        'reference': ReferenceGenerator.objects.last(),
+        'current_month': current_month,
         }
-        print(c_month.id,' c_month')
         return render(request, 'bank/bank_operation_table.html', context)
 
 # @login_required(redirect_field_name="bank-operation-detail")
@@ -97,6 +130,7 @@ def bank_operation_detail(request, pk):
 
 # @login_required(redirect_field_name="add-bank-operation")
 def add_bank_operation(request, month=None, year=None):
+    
     if request.method == 'POST':
         form = BankOperationForm(request.POST)
         print(request.POST)
@@ -110,22 +144,8 @@ def add_bank_operation(request, month=None, year=None):
                 )
             reference.save()
 
-            # Rediriger ou afficher un message de succès
             if request.POST.get('modal'):
-                # operations = BankOperation.objects.all()
-                # exercise = Exercise.objects.get(
-                #     id=request.POST.get('exercise'))
-                # month = Month.objects.get(id=request.POST.get('month'))
-                # context = {
-                #     'success': 'Formulaire enregistré avec succès !',
-                #     'page_title': 'Opération bancaire',
-                #     'banks': BankAccount.objects.all(),
-                #     'operations': operations,
-                #     'exercise': exercise,
-                #     'months': Month.objects.filter(year_id=exercise.id),
-                #     'current_month': Month.objects.get(id=month.id, year=exercise.id)
-                # }
-                
+                                
                 context = {
                     'current_month': request.POST.get('month'),
                     'exercise': request.POST.get('exercise'),
