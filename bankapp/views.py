@@ -68,7 +68,7 @@ def bank_operation_views(request, **kwargs):
     else:
         month = request.GET.get('current_month')
         exercise = request.GET.get('exercise')
-        print(month)
+        print('mois ', month)
         if month:
             c_month = Month.objects.get(id=month)
             operations = BankOperation.objects.filter(month_id=c_month.id, month__year=exercise)
@@ -85,6 +85,10 @@ def bank_operation_views(request, **kwargs):
                 total_operation = BankTotalOperation.objects.get(month=month).month_amount
             except BankTotalOperation.DoesNotExist:
                 total_operation = 0
+            try:
+                deferrer = BankDeferrerOperation.objects.get(month=month).initial
+            except BankDeferrerOperation.DoesNotExist:
+                deferrer = 0
 
             print('total depense :', total_expenditure)
             print(c_month.id,' c_month')
@@ -101,10 +105,11 @@ def bank_operation_views(request, **kwargs):
             'total_expenditure': total_expenditure,
             'total_income': total_income,
             'total_operation': total_operation,
+            'deferrer': deferrer,
             }
             return render(request, 'bank/bank_operation_table.html', context)
 
-        if Month.objects.all().count()==0:
+        if Month.objects.all().count()<1:
             current_month = 0
         else:
             current_month = Month.objects.all().last()
@@ -130,7 +135,7 @@ def bank_operation_detail(request, pk):
 
 # @login_required(redirect_field_name="add-bank-operation")
 def add_bank_operation(request, month=None, year=None):
-    
+
     if request.method == 'POST':
         form = BankOperationForm(request.POST)
         print(request.POST)
@@ -142,8 +147,8 @@ def add_bank_operation(request, month=None, year=None):
                 initial='2MC',
                 ending_letter='B'
                 )
-            reference.save()
-
+            print('before save ', reference)
+            print('after save ', reference)
             if request.POST.get('modal'):
                                 
                 context = {

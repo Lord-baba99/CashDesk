@@ -51,24 +51,28 @@ class ReferenceGenerator(models.Model):
     ending_letter = models.CharField(max_length=3)
     full_name = models.CharField(max_length=255, null=True, blank=True)
 
+    def _incrementor(self):
+        if ReferenceGenerator.objects.count() > 0:
+            old = ReferenceGenerator.objects.last()
+            old_number = old.number
+            print('nombre initial :', self.number)
+            print('ancien nombre :', old_number)
+            self.number = old_number + 1
+            print('nombre final :', self.number)
+
     def name_formator(self):
         date_obj = datetime.strptime(str(self.date)[:10], "%Y-%m-%d")
         date_formatted = date_obj.strftime("%d%m%y")
         self.date_str = date_formatted
         self.full_name = f'{self.initial}-{self.number}{self.date_str}-{self.ending_letter}'
 
-    def _incrementor(self):
-        if ReferenceGenerator.objects.count() > 0:
-            old = ReferenceGenerator.objects.last()
-            old_number = old.number
-            self.number = old_number + 1
 
     def __str__(self):
         return self.full_name
 
     def save(self, *args, **kwargs):
+        self._incrementor()
         self.name_formator()
-        self._incrementor()  # Ajouter des parenthèses ici pour appeler la méthode
         super().save(*args, **kwargs)
 
 # @receiver(pre_save, sender=ReferenceGenerator)
@@ -87,6 +91,9 @@ class BankTotalExpenditure(models.Model):
         if amount_sum['expenditure_amount__sum']:
             self.month_amount = amount_sum['expenditure_amount__sum']
             self.save()
+        else:
+            self.month_amount = 0
+            self.save()
 
     def __str__(self):
         return f'Total dépense {self.month}'
@@ -100,6 +107,9 @@ class BankTotalIncome(models.Model):
         amount_sum = operations.aggregate(Sum('income_amount'))
         if amount_sum['income_amount__sum']:
             self.month_amount = amount_sum['income_amount__sum']
+            self.save()
+        else:
+            self.month_amount = 0
             self.save()
 
     def __str__(self):
