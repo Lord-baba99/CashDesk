@@ -101,7 +101,7 @@ def bank_operation_views(request, **kwargs):
             'months': Month.objects.filter(year_id=exercise),
             'current_month': c_month.id,
             'month_name': c_month.name,
-            'reference': ReferenceGenerator.objects.last(),
+            'reference': BankReferenceGenerator.objects.last(),
             'total_expenditure': total_expenditure,
             'total_income': total_income,
             'total_operation': total_operation,
@@ -143,7 +143,7 @@ def add_bank_operation(request, month=None, year=None):
         if form.is_valid():
             print('form valid')
             form.save()
-            reference = ReferenceGenerator.objects.create(
+            reference = BankReferenceGenerator.objects.create(
                 initial='2MC',
                 ending_letter='B'
                 )

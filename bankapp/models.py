@@ -43,7 +43,7 @@ class BankOperation(models.Model):
         return reverse('bank-operation-detail', kwargs={"pk": self.pk})
 
 
-class ReferenceGenerator(models.Model):
+class BankReferenceGenerator(models.Model):
     initial = models.CharField(max_length=6)
     number = models.IntegerField(default=0)
     date = models.DateTimeField(default=datetime.now)
@@ -52,8 +52,8 @@ class ReferenceGenerator(models.Model):
     full_name = models.CharField(max_length=255, null=True, blank=True)
 
     def _incrementor(self):
-        if ReferenceGenerator.objects.count() > 0:
-            old = ReferenceGenerator.objects.last()
+        if BankReferenceGenerator.objects.count() > 0:
+            old = BankReferenceGenerator.objects.last()
             old_number = old.number
             print('nombre initial :', self.number)
             print('ancien nombre :', old_number)
@@ -75,7 +75,7 @@ class ReferenceGenerator(models.Model):
         self.name_formator()
         super().save(*args, **kwargs)
 
-# @receiver(pre_save, sender=ReferenceGenerator)
+# @receiver(pre_save, sender=BankReferenceGenerator)
 # def pre_save_reference_generator(sender, instance, **kwargs):
 #     instance.name_formator()
 
