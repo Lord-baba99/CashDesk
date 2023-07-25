@@ -10,7 +10,7 @@ class Enterprise(models.Model):
     rib = models.CharField(max_length=255, blank=True, null=True)
     cnss = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=255, blank=True, null=True)
-    adress = models.CharField(max_length=255, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
     web_site = models.CharField(max_length=255, blank=True, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
 

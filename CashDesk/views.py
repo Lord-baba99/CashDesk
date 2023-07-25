@@ -1,4 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from enterprise.models import Enterprise
 
 def home(request):
-	return render(request, 'index.html')
+	if Enterprise.objects.all().count() < 1:
+		return redirect('initialise')
+	else:
+		return render(request, 'index.html')

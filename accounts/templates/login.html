@@ -17,7 +17,7 @@ Connection
       </p>
   </div>
   <div>{{error_message}}</div>
-  <form hx-post='{% url 'login' %}' hx-target='body' hx-swap='innerHTML' class="grid gap-6 grid-cols-2 login-form flex-wrap">
+  <form hx-post="{% url 'login' %}" hx-target='body' hx-swap='innerHTML' class="grid gap-6 grid-cols-2 login-form flex-wrap">
     {% csrf_token %}
     <div class="flex flex-col">
       <label for="floatingInput" class="mb-2">Nom d'utilisateur</label>

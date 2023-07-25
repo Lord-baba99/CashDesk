@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+{% load compress %}
+{% load static %}
+<html lang="fr">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+      <script src="{% static 'flowbite/packages/flowbite.min.js' %}" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+      <script src="{% static 'htmx/htmx.min.js' %}"></script>
+      {% compress css %}
+      <link rel="stylesheet" href="{% static 'out/output.css' %}">
+   {% endcompress %}
+   <style>
+   
+   /* scrollbar */
+   /* width */
+   ::-webkit-scrollbar {
+   width: 5px;
+   height: 5px;
+   }
+   /* Track */
+   ::-webkit-scrollbar-track {
+   background: transparent;
+   }
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+   background: #888;
+   border-radius: .6rem;
+   }
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+   background: rgb(88, 80, 236);
+   }
+   </style>
+</head>
+<body class="bg-indigo-300 h-screen overflow-y-hidden print:bg-white">
+   <script>
+   htmx.onLoad(function(content) {
+   initFlowbite();
+   });
+
+   function printPage() {
+            window.print();
+        }
+   </script>
+
+   <section id="init" class="h-full bg-white dark:bg-indigo-800">
+	<form>
+		{% csrf_token %}
+    <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
+        <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-indigo-800 md:text-5xl lg:text-6xl dark:text-white">Bienvenue</h1>
+        <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-white">Découvrez notre nouvelle application de gestion de trésorerie, conçue pour simplifier vos finances et vous aider à garder le contrôle de vos dépenses. Suivez vos revenus et vos dépenses en temps réel, effectuez des analyses détaillées et prenez des décisions financières éclairées. Gérez votre trésorerie efficacement avec notre application conviviale et atteignez vos objectifs financiers en toute sérénité.</p>
+        <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
+            <a hx-post="{% url 'initialise' %}" hx-target="#init" hx-swap="innerHTML" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-900 dark:bg-white dark:text-gray-900">
+                Commençons !
+                <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a> 
+        </div>
+    </div>
+    </form>
+</section>
+</body>
+</html>

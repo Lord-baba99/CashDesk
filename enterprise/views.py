@@ -44,6 +44,11 @@ def update():
         )
         reference.save()
 
+def initialise(request):
+	if request.POST:
+		return render(request, 'enterprise/enterprise_config.html')
+	return render(request, 'enterprise/welcome.html')
+
 def settings_view(request):
 	context = {
 		'page_title': 'Parametres'
