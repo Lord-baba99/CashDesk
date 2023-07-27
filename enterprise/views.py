@@ -106,5 +106,24 @@ def create_month(request, month=None, exercise=None):
 	redirect_url = reverse('bank-operation-views') + '?' + query_string
 	return HttpResponseRedirect(redirect_url)
 
+def create_enterprise(request):
+	if request.POST:
+		form = EnterpriseForm(request.POST)
+		if form.is_valid:
+			form.save()
+			name = request.POST['name']
+			context = {
+			'succes': True,
+			'sucess_message': f'{name} a bien été créé !',
+			}
+			return HttpResponse(context)
+		else:
+			context = {
+			'succes': False,
+			'error_message': 'Les données saisies ne sont pas correctes !',
+			}
+			return HttpResponse(context)
+
+
 def samples(request):
 	return render(request, 'enterprise/user_profile.html')
