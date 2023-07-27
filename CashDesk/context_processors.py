@@ -1,7 +1,7 @@
 from enterprise.models import Enterprise
 
 if Enterprise.objects.all().count() > 0:
-    enterprise = Enterprise.objects.get(id=1)
+    enterprise = Enterprise.objects.all().first()
 else: enterprise = "unknow"
 
 print(enterprise)

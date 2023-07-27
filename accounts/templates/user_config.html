@@ -62,3 +62,33 @@
                         <button class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" type="submit">Enregistrer</button>
                     </div>
             </form>
+
+<script>
+    function previewImage(event) {
+            const fileInput = event.target;
+            const imagePreview = document.getElementById("imagePreview");
+            const fileInputLabel1 = document.getElementById("imageInputLabel1");
+            const fileInputLabel2 = document.getElementById("imageInputLabel2");
+
+            // Vérifier si des fichiers ont été sélectionnés
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Créer une balise <img> pour prévisualiser l'image
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.style.maxWidth = "300px"; // Optionnel : définir la taille maximale de l'image prévisualisée
+                    imagePreview.innerHTML = ""; // Effacer toute prévisualisation précédente
+                    imagePreview.appendChild(img); // Ajouter l'image prévisualisée à la page
+
+                    // Masquer l'input de type "file" et le label
+                    fileInput.style.display = "none";
+                    fileInputLabel1.style.display = "none";
+                    fileInputLabel2.style.display = "block";
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+</script>

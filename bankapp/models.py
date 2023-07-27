@@ -55,10 +55,10 @@ class BankReferenceGenerator(models.Model):
         if BankReferenceGenerator.objects.count() > 0:
             old = BankReferenceGenerator.objects.last()
             old_number = old.number
-            print('nombre initial :', self.number)
-            print('ancien nombre :', old_number)
+            # print('nombre initial :', self.number)
+            # print('ancien nombre :', old_number)
             self.number = old_number + 1
-            print('nombre final :', self.number)
+            # print('nombre final :', self.number)
 
     def name_formator(self):
         date_obj = datetime.strptime(str(self.date)[:10], "%Y-%m-%d")
@@ -127,10 +127,10 @@ class BankDeferrerOperation(models.Model):
             month_before = Month.objects.filter(id__lt=self.month.id).last()
         except Month.DoesNotExist:
             month_before = None
-        print(month_before)
+        # print(month_before)
         if month_before:
             defer_before = BankDeferrerOperation.objects.get(month_id=month_before.id)
-            print(defer_before.finall)
+            # print(defer_before.finall)
             self.initial = defer_before.finall
 
     def update_finall(self, total):
@@ -162,7 +162,7 @@ class BankTotalOperation(models.Model):
         defer = BankDeferrerOperation.objects.get(month_id=self.month).initial
         total_income = BankTotalIncome.objects.get(month_id=self.month).month_amount
         total_expenditure = BankTotalExpenditure.objects.get(month_id=self.month).month_amount
-        print('(model) total depense ', total_income)
+        # print('(model) total depense ', total_income)
         result = defer + total_income - total_expenditure
         self.month_amount = result
         self.save()

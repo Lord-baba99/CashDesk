@@ -68,7 +68,7 @@ def bank_operation_views(request, **kwargs):
     else:
         month = request.GET.get('current_month')
         exercise = request.GET.get('exercise')
-        print('mois ', month)
+        # print('mois ', month)
         if month:
             c_month = Month.objects.get(id=month)
             operations = BankOperation.objects.filter(month_id=c_month.id, month__year=exercise)
@@ -90,8 +90,8 @@ def bank_operation_views(request, **kwargs):
             except BankDeferrerOperation.DoesNotExist:
                 deferrer = 0
 
-            print('total depense :', total_expenditure)
-            print(c_month.id,' c_month')
+            # print('total depense :', total_expenditure)
+            # print(c_month.id,' c_month')
 
             context = {
             'page_title': 'Opérations bancaires',
@@ -124,7 +124,7 @@ def bank_operation_views(request, **kwargs):
 # @login_required(redirect_field_name="bank-operation-detail")
 def bank_operation_detail(request, pk):
     operation = BankOperation.objects.get(pk=pk)
-    print('month :', request.GET.get('month'), ' exercise :', request.GET.get('exercise'))
+    # print('month :', request.GET.get('month'), ' exercise :', request.GET.get('exercise'))
     context = {
         "operation": operation,
         "page_title": f"Piece de banque : {operation.reference}",
@@ -138,17 +138,17 @@ def add_bank_operation(request, month=None, year=None):
 
     if request.method == 'POST':
         form = BankOperationForm(request.POST)
-        print(request.POST)
-        print(form)
+        # print(request.POST)
+        # print(form)
         if form.is_valid():
-            print('form valid')
+            # print('form valid')
             form.save()
             reference = BankReferenceGenerator.objects.create(
                 initial='2MC',
                 ending_letter='B'
                 )
-            print('before save ', reference)
-            print('after save ', reference)
+            # print('before save ', reference)
+            # print('after save ', reference)
             if request.POST.get('modal'):
                                 
                 context = {
@@ -156,14 +156,14 @@ def add_bank_operation(request, month=None, year=None):
                     'exercise': request.POST.get('exercise'),
                     'success': 'Formulaire enregistré avec succès !'
                 }
-                print(request.POST.get('exercise'), request.POST.get('month'))
+                # print(request.POST.get('exercise'), request.POST.get('month'))
                 query_string = urlencode(context)
                 redirect_url = reverse('bank-operation-views') + '?' + query_string
-                print(redirect_url)
+                # print(redirect_url)
                 return HttpResponseRedirect(redirect_url)
             
         else:
-            print('form invalid')
+            # print('form invalid')
             operations = BankOperation.objects.all()
             context = {
                 'Error': 'Formulaire invalide !',
@@ -191,13 +191,13 @@ def add_bank_operation_views(request, month, year):
 
 def get_bank_operation(request, pk=None, month=None, exercise=None):
         operation = get_object_or_404(BankOperation, pk=pk)
-        print(operation.wording)
+        # print(operation.wording)
         context = {
         'operation': operation,
         'current_month': month,
         'exercise': exercise,
         }
-        print(exercise, 'exercise get-bank')
+        # print(exercise, 'exercise get-bank')
         return render(request, 'bank/update_bank_operation.html', context)
 
 def delete_bank_operation(request, month=None, exercise=None, pk=None):
@@ -219,7 +219,7 @@ def update_bank_operation(request):
         pk = request.POST.get('pk')
         from_table = request.POST.get('from_table')
         wording = request.POST.get('wording')
-        print(f'pk: {pk}, from_table: {from_table}, wording: {wording}')
+        # print(f'pk: {pk}, from_table: {from_table}, wording: {wording}')
         operation = BankOperation.objects.get(pk=pk)
         operation.wording = request.POST.get('wording')
         operation.save(update_fields=["wording"])
@@ -228,7 +228,7 @@ def update_bank_operation(request):
         'current_month': request.POST.get('current_month'),
         'exercise': request.POST.get('exercise'),
         }
-        print(request.POST.get('current_month'), 'current_month')
+        # print(request.POST.get('current_month'), 'current_month')
         return render(request, 'bank/row_bank.html', context)
     else:
         return redirect('bank-operation-views')
@@ -247,10 +247,10 @@ def return_bank_row(request, pk, month=None, exercise=None):
 
 def add_continue_bank_operation(request):
     bank_op = BankOperationForm
-    print(request.POST)
+    # print(request.POST)
     if request.POST:
         form = bank_op(request.POST)
-        print(form)
+        # print(form)
         if form.is_valid():
             form.save()
             context = {

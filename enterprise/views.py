@@ -59,7 +59,7 @@ def settings_view(request):
 def create_month(request, month=None, exercise=None):
 	if request.POST:
 		months = Month.objects.filter(year_id=exercise)
-		print(months)
+		# print(months)
 		form = MonthForm(request.POST)
 		if form.is_valid():
 			all_ready_exist = False
@@ -93,14 +93,15 @@ def create_month(request, month=None, exercise=None):
 					month=month_instance
 				).save()
 		else:
-			print("form is invalid")
+			# print("form is invalid")
+			pass
 
 	context = {
 		'current_month': month_instance.id,
 		'exercise': exercise,
 	}
 
-	print(context)
+	# print(context)
 	query_string = urlencode(context)
 	redirect_url = reverse('bank-operation-views') + '?' + query_string
 	return HttpResponseRedirect(redirect_url)

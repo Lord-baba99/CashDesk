@@ -74,7 +74,7 @@ def cashdesk_operation_views(request, **kwargs):
     else:
         month = request.GET.get('current_month')
         exercise = request.GET.get('exercise')
-        print('mois ', month)
+        # print('mois ', month)
         if month:
             c_month = Month.objects.get(id=month)
             operations = CashDeskOperation.objects.filter(
@@ -101,8 +101,8 @@ def cashdesk_operation_views(request, **kwargs):
             except CashDeskDeferrerOperation.DoesNotExist:
                 deferrer = 0
 
-            print('total depense :', total_expenditure)
-            print(c_month.id, ' c_month')
+            # print('total depense :', total_expenditure)
+            # print(c_month.id, ' c_month')
 
             context = {
                 'page_title': 'Opérations à la caisse',
@@ -137,8 +137,8 @@ def cashdesk_operation_views(request, **kwargs):
 
 def cashdesk_operation_detail(request, pk):
     operation = CashDeskOperation.objects.get(pk=pk)
-    print('month :', request.GET.get('month'),
-          ' exercise :', request.GET.get('exercise'))
+    # print('month :', request.GET.get('month'),
+    #      ' exercise :', request.GET.get('exercise'))
     context = {
         "operation": operation,
         "page_title": f"Piece de caisse : {operation.reference}",
@@ -154,17 +154,17 @@ def add_cashdesk_operation(request, month=None, year=None):
 
     if request.method == 'POST':
         form = CashDeskOperationForm(request.POST)
-        print(request.POST)
-        print(form)
+        # print(request.POST)
+        # print(form)
         if form.is_valid():
-            print('form valid')
+            # print('form valid')
             form.save()
             reference = CashDeskReferenceGenerator.objects.create(
                 initial='2MC',
                 ending_letter='C'
             )
-            print('before save ', reference)
-            print('after save ', reference)
+            # print('before save ', reference)
+            # print('after save ', reference)
             if request.POST.get('modal'):
 
                 context = {
@@ -172,15 +172,15 @@ def add_cashdesk_operation(request, month=None, year=None):
                     'exercise': request.POST.get('exercise'),
                     'success': 'Formulaire enregistré avec succès !'
                 }
-                print(request.POST.get('exercise'), request.POST.get('month'))
+                # print(request.POST.get('exercise'), request.POST.get('month'))
                 query_string = urlencode(context)
                 redirect_url = reverse(
                     'cashdesk-operation-views') + '?' + query_string
-                print(redirect_url)
+                # print(redirect_url)
                 return HttpResponseRedirect(redirect_url)
 
         else:
-            print('form invalid')
+            # print('form invalid')
             operations = CashDeskOperation.objects.all()
             context = {
                 'Error': 'Formulaire invalide !',
@@ -209,13 +209,13 @@ def add_cashdesk_operation_views(request, month, year):
 
 def get_cashdesk_operation(request, pk=None, month=None, exercise=None):
     operation = get_object_or_404(CashDeskOperation, pk=pk)
-    print(operation.wording)
+    # print(operation.wording)
     context = {
         'operation': operation,
         'current_month': month,
         'exercise': exercise,
     }
-    print(exercise, 'exercise get-cashdesk')
+    # print(exercise, 'exercise get-cashdesk')
     return render(request, 'cashdesk/update_cashdesk_operation.html', context)
 
 
@@ -239,7 +239,7 @@ def update_cashdesk_operation(request):
         pk = request.POST.get('pk')
         from_table = request.POST.get('from_table')
         wording = request.POST.get('wording')
-        print(f'pk: {pk}, from_table: {from_table}, wording: {wording}')
+        # print(f'pk: {pk}, from_table: {from_table}, wording: {wording}')
         operation = CashDeskOperation.objects.get(pk=pk)
         operation.wording = request.POST.get('wording')
         operation.save(update_fields=["wording"])
@@ -248,7 +248,7 @@ def update_cashdesk_operation(request):
             'current_month': request.POST.get('current_month'),
             'exercise': request.POST.get('exercise'),
         }
-        print(request.POST.get('current_month'), 'current_month')
+        # print(request.POST.get('current_month'), 'current_month')
         return render(request, 'cashdesk/row_cashdesk.html', context)
     else:
         return redirect('cashdesk-operation-views')
@@ -267,10 +267,10 @@ def return_cashdesk_row(request, pk, month=None, exercise=None):
 
 def add_continue_cashdesk_operation(request):
     cashdesk_op = CashDeskOperationForm
-    print(request.POST)
+    # print(request.POST)
     if request.POST:
         form = cashdesk_op(request.POST)
-        print(form)
+        # print(form)
         if form.is_valid():
             form.save()
             context = {
