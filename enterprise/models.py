@@ -1,7 +1,7 @@
 from django.db import models
 
 class Enterprise(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(max_length=255, blank=False, null=True)
     logo = models.ImageField(upload_to="enterprise/img/logo/")
     description = models.CharField(max_length=255, blank=True, null=True)
     slogan = models.CharField(max_length=255, blank=True, null=True)
@@ -9,8 +9,8 @@ class Enterprise(models.Model):
     rccm = models.CharField(max_length=255, blank=True, null=True)
     rib = models.CharField(max_length=255, blank=True, null=True)
     cnss = models.CharField(max_length=255, blank=True, null=True)
-    phone = models.CharField(max_length=255, blank=True, null=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
+    phone = models.CharField(max_length=255, blank=False, null=True)
+    address = models.CharField(max_length=255, blank=False, null=True)
     web_site = models.CharField(max_length=255, blank=True, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
 

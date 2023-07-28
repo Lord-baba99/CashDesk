@@ -44,9 +44,9 @@
         }
    </script>
 </head>
-<body class="bg-indigo-300 h-screen overflow-y-hidden print:bg-white">
+<body class="bg-indigo-300 h-screen overflow-y-auto print:bg-white flex justify-center items-center p-6">
 
-   <section id="init" class="h-full bg-white dark:bg-indigo-800">
+   <section id="init" class="bg-white dark:bg-indigo-800 flex justify-center container rounded-xl">
 	<form>
 		{% csrf_token %}
     <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">

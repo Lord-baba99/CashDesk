@@ -66,7 +66,7 @@ def signup(request):
     context = {
 
     }
-    return render(request, 'profile.html', context)
+    return render(request, 'signup.html', context)
 
 
 def show_profile(request):

@@ -106,24 +106,104 @@ def create_month(request, month=None, exercise=None):
 	redirect_url = reverse('bank-operation-views') + '?' + query_string
 	return HttpResponseRedirect(redirect_url)
 
-def create_enterprise(request):
+def create_exercise(request):
 	if request.POST:
-		form = EnterpriseForm(request.POST)
-		if form.is_valid:
-			form.save()
-			name = request.POST['name']
-			context = {
-			'succes': True,
-			'sucess_message': f'{name} a bien été créé !',
-			}
-			return HttpResponse(context)
+		if request.POST.get("initialise"):
+			exercise = ExerciseForm(request.POST)
+			if exercise.is_valid():
+				exercises = Exercise.objects.filter(year=request.POST.get('year'))
+				if exercises.count() > 0:
+					context = {
+					'error': True,
+					'error_message': "L'exercice saisies existe deja !",
+					'url': reverse('create-exercise'),
+					}
+					return render(request, 'enterprise/response/next_step.html', context)
+				else:
+					# exercise.save()
+					pass
+			post_data = request.POST.dict()
+			post_data['year'] = Exercise.objects.all().last().id
+			print(post_data['year'])
+			form = MonthForm(post_data)
 		else:
-			context = {
-			'succes': False,
-			'error_message': 'Les données saisies ne sont pas correctes !',
-			}
-			return HttpResponse(context)
+			pass
+			
 
+		if form.is_valid():
+			print("form valid ")
+			# form.save()
+			name = request.POST['year']
+			context = {
+			'success': True,
+			'success_message': f"L'exercice {name} a été créé avec succès!",
+			'name': name,
+			'url': reverse('signup')
+			}
+			return render(request, 'enterprise/response/next_step.html', context)
+		else:
+			errors_list = {}
+			errors = form.errors
+			if 'year' in errors:
+				errors_list.update({"L'exercice": "L'année est invalide ou vide."})
+			if 'name' in errors:
+				errors_list.update({'Mois': 'Le premier mois est obligatoire.'})
+			if 'start' in errors:
+				errors_list.update({"Le debut du mois": "Précisez le premier jour du mois."})
+			if 'end' in errors:
+				errors_list.update({'La fin du mois': 'Précisez le dernier jour du mois.'})
+			# print(errors_list)
+			# print('form invalid', request.FILES, ' === ', request.POST)
+			# print(errors_list)
+			print(form)
+			print(errors_list)
+			context = {
+			'form': form,
+			'error': True,
+			'errors_list': errors_list,
+			'error_message': 'Les données saisies ne sont pas correctes !',
+			'url': reverse('create-exercise'),
+			}
+			return render(request, 'enterprise/response/next_step.html', context)
+	return render(request, 'enterprise/exercise_config.html')
 
 def samples(request):
 	return render(request, 'enterprise/user_profile.html')
+
+def create_enterprise(request):
+	if request.POST:
+		form = EnterpriseForm(request.POST, request.FILES)
+		if form.is_valid():
+			# print("form valid ")
+			# form.save()
+			name = request.POST['name']
+			context = {
+			'success': True,
+			'success_message': 'a été créé avec succès!',
+			'name': name,
+			'url': reverse('create-exercise')
+			}
+			return render(request, 'enterprise/response/next_step.html', context)
+		else:
+			errors_list = {}
+			errors = form.errors
+			if 'logo' in errors:
+				errors_list.update({'Logo': 'Le fichier du logo est invalide ou vide.'})
+			if 'name' in errors:
+				errors_list.update({'Nom': 'La raison sociale est obligatoire.'})
+			if 'address' in errors:
+				errors_list.update({"Adresse": "L'adresse est obligatoire."})
+			if 'phone' in errors:
+				errors_list.update({'Téléphone': 'Le numero de téléphone est obligatoire.'})
+			print(errors_list)
+			# print('form invalid', request.FILES, ' === ', request.POST)
+			# print(errors_list)
+			context = {
+			'form': form,
+			'error': True,
+			'errors_list': errors_list,
+			'error_message': 'Les données saisies ne sont pas correctes !',
+			'url': reverse('create-enterprise'),
+			}
+			return render(request, 'enterprise/response/next_step.html', context)
+	return render(request, 'enterprise/exercise_config.html')

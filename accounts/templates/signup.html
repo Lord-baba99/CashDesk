@@ -1,0 +1,116 @@
+<form action="#" class="container p-4" hx-encoding="multipart/form-data">
+        {% csrf_token %}
+        <div class="w-full md:w-[20%] md:mr-3 flex md:flex-col">
+        <div id="imagePreview"></div>
+    <label class="py-2 px-3 w-fit rounded-lg bg-indigo-800 text-white h-fit" for="imageInput" id="imageInputLabel1">Choisir une image</label>
+    <input type="file" id="imageInput" onchange="previewImage(event)" accept="image/*" class="hidden">
+    <label class="py-2 px-3 w-fit rounded-lg bg-indigo-800 text-white h-fit" for="imageInput" id="imageInputLabel2" style="display: none;" >Choisir une image</label>
+      </div>
+                <div class="grid grid-cols-6 gap-6">
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prenom(s)</label>
+                        <input type="text" name="first_name" id="first-name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="Bonnie" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="last-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom(s)</label>
+                        <input type="text" name="last_name" id="last-name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="Green" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="country" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pays</label>
+                        <input type="text" name="country" id="country" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="Etats Unies" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="city" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ville</label>
+                        <input type="text" name="city" id="city" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="Ex. San Francisco" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Adresse</label>
+                        <input type="text" name="location" id="address" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="Ex. California" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                        <input type="email" name="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="example@company.com" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="phone-number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numero de telephone</label>
+                        <input type="text" name="phone_number" id="phone-number" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" pattern="(\+\d{3})(\d{9})" placeholder="Ex. +(242) 05 123 45 67" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="birthday" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Annee de naissance</label>
+                        <input type="number" name="birthday" id="birthday" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="15/08/1990" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="take_on_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de debut de service</label>
+                        <input type="text" name="take_on_date" id="take_on_date" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500 disable" placeholder="Company Name" disabled>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fonction</label>
+                        <input type="text" name="qualification" id="role" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500 disable" placeholder="React Developer" disabled>
+                    </div>
+                                     
+                </div>
+                <div>
+                    <p id="password-error" class="text-red-500 text-sm hidden">Les mots de passe ne correspondent pas.</p>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mot de passe actuelle</label>
+                        <input type="password" name="password-tampon" id="password-tampon" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="••••••••" required>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mot de passe actuelle</label>
+                        <input type="password" name="password" id="password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="••••••••" required onchange="validatePassword()">
+                    </div>
+                   </div>
+                <div class="col-span-6 sm:col-full">
+                        <button class="hidden text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" id="submit">Enregistrer</button>
+                    </div>
+            </form>
+
+<script>
+    function previewImage(event) {
+            const fileInput = event.target;
+            const imagePreview = document.getElementById("imagePreview");
+            const fileInputLabel1 = document.getElementById("imageInputLabel1");
+            const fileInputLabel2 = document.getElementById("imageInputLabel2");
+
+            // Vérifier si des fichiers ont été sélectionnés
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Créer une balise <img> pour prévisualiser l'image
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.style.maxWidth = "100px"; // Optionnel : définir la taille maximale de l'image prévisualisée
+                    imagePreview.innerHTML = ""; // Effacer toute prévisualisation précédente
+                    imagePreview.appendChild(img); // Ajouter l'image prévisualisée à la page
+
+                    // Masquer l'input de type "file" et le label
+                    //fileInput.style.display = "none";
+                    fileInputLabel1.style.display = "none";
+                    fileInputLabel2.style.display = "block";
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        };
+    function validatePassword() {
+    const passwordTampon = document.getElementById('password-tampon').value;
+    const password = document.getElementById('password').value;
+    const passwordError = document.getElementById('password-error');
+    const submit = document.getElementById('submit')
+
+    if (passwordTampon !== password) {
+        passwordError.classList.remove('hidden');
+        return false;
+    }
+    /*else if (passwordTampon===password){
+        passwordError.classList.add("hidden")
+    }*/
+
+
+    passwordError.classList.add('hidden');
+    // Le mot de passe est valide, vous pouvez soumettre le formulaire
+    submit.classList.remove('hidden')
+    return true;
+}
+</script>

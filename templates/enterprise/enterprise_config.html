@@ -1,9 +1,12 @@
-    <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
-    	<form class="container p-4 flex flex-col md:flex-row md:w-full md:align-center align-center">
+    <div class="w-full p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+    	<form class="p-4 flex flex-col md:flex-row md:w-full md:align-center align-center" hx-encoding="multipart/form-data">
+        {% csrf_token %}
       <div class="w-full md:w-[20%] md:mr-3 flex md:flex-col">
       	<div id="logoPreview"></div>
     <label class="py-2 px-3 w-fit rounded-lg bg-indigo-800 text-white h-fit" for="logoInput" id="logoInputLabel1">Charger le logo</label>
-    <input type="file" id="logoInput" onchange="previewLogo(event)" accept="image/*" style="display: none;">
+    
+    <input type="file" id="logoInput"  onchange="previewLogo(event)" accept="image/*" class="hidden" name="logo">
+   
     <label class="py-2 px-3 w-fit rounded-lg bg-indigo-800 text-white h-fit" for="logoInput" id="logoInputLabel2" style="display: none;">Changer le logo</label>
       </div>
 
@@ -55,7 +58,9 @@
       
     </div>
   </div>
-  <button type="submit" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+  <div id="swappable_zone">
+    <button hx-post="{% url 'create-enterprise' %}" hx-target="#swappable_zone" hx-swap="innerHTML" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+  </div>
 	</div>
 
     </form>
@@ -67,26 +72,30 @@
             const logoPreview = document.getElementById("logoPreview");
             const fileInputLabel1 = document.getElementById("logoInputLabel1");
             const fileInputLabel2 = document.getElementById("logoInputLabel2");
+            //const hiddenFileDataInput = document.getElementById("hiddenFileData");
 
             // Vérifier si des fichiers ont été sélectionnés
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
-
                 reader.onload = function (e) {
+                  console.log(fileInput.files);
                     // Créer une balise <img> pour prévisualiser l'image
                     const img = document.createElement("img");
                     img.src = e.target.result;
-                    img.style.maxWidth = "300px"; // Optionnel : définir la taille maximale de l'image prévisualisée
+                    img.style.maxWidth = "100px"; // Optionnel : définir la taille maximale de l'image prévisualisée
                     logoPreview.innerHTML = ""; // Effacer toute prévisualisation précédente
                     logoPreview.appendChild(img); // Ajouter l'image prévisualisée à la page
 
                     // Masquer l'input de type "file" et le label
-                    fileInput.style.display = "none";
+                    //fileInput.style.display = "none";
                     fileInputLabel1.style.display = "none";
                     fileInputLabel2.style.display = "block";
+                    //hiddenFileDataInput.value = fileInput.files[0] ? reader.result : "";
                 };
-
+                console.log(fileInput.files);
+                console.log(fileInput.files[0]);
                 reader.readAsDataURL(fileInput.files[0]);
             }
-        }
+        console.log(fileInput.files);
+      }
       </script>

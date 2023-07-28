@@ -6,6 +6,10 @@ class MonthForm(forms.ModelForm):
 		model = Month
 		fields = '__all__'
 
+class ExerciseForm(forms.ModelForm):
+	class Meta:
+		model = Exercise
+		fields = '__all__'
 
 class EnterpriseForm(forms.ModelForm):
 	class Meta:

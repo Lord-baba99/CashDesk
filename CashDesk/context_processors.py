@@ -4,7 +4,7 @@ if Enterprise.objects.all().count() > 0:
     enterprise = Enterprise.objects.all().first()
 else: enterprise = "unknow"
 
-print(enterprise)
+#print(enterprise)
 def global_context(request):
     # Variables de contexte globales
     context = {
