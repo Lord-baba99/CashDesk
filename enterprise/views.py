@@ -195,7 +195,7 @@ def create_enterprise(request):
 				errors_list.update({"Adresse": "L'adresse est obligatoire."})
 			if 'phone' in errors:
 				errors_list.update({'Téléphone': 'Le numero de téléphone est obligatoire.'})
-			print(errors_list)
+			# print(errors_list)
 			# print('form invalid', request.FILES, ' === ', request.POST)
 			# print(errors_list)
 			context = {

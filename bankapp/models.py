@@ -9,7 +9,7 @@ from django.db.models import Avg, Max, Min, Sum
 
 
 class BankAccount(models.Model):
-    enterprise = models.ForeignKey(Enterprise, on_delete=models.CASCADE)
+    enterprise = models.ForeignKey(Enterprise, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=255, null=True, blank=True)
     rib = models.CharField(max_length=255, null=True, blank=True)
     agence = models.CharField(max_length=255, null=True, blank=True)

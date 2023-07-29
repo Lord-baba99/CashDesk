@@ -1,10 +1,18 @@
 <form action="#" class="container p-4" hx-encoding="multipart/form-data">
         {% csrf_token %}
         <div class="w-full md:w-[20%] md:mr-3 flex md:flex-col">
-        <div id="imagePreview"></div>
+        <div>
+            <div id="imagePreview"></div>
     <label class="py-2 px-3 w-fit rounded-lg bg-indigo-800 text-white h-fit" for="imageInput" id="imageInputLabel1">Choisir une image</label>
-    <input type="file" id="imageInput" onchange="previewImage(event)" accept="image/*" class="hidden">
+    <input type="file" id="imageInput" onchange="previewImage(event)" accept="image/*" class="hidden" name="profile_picture">
     <label class="py-2 px-3 w-fit rounded-lg bg-indigo-800 text-white h-fit" for="imageInput" id="imageInputLabel2" style="display: none;" >Choisir une image</label>
+        </div>
+    <div>
+        <div class="col-span-6 sm:col-span-3">
+                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prenom(s)</label>
+                        <input type="text" name="first_name" id="first-name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="Bonnie" required>
+                    </div>
+    </div>
       </div>
                 <div class="grid grid-cols-6 gap-6">
                     <div class="col-span-6 sm:col-span-3">

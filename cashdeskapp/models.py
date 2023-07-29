@@ -8,7 +8,7 @@ from django.urls import reverse
 from enterprise.models import *
 
 class CashDesk(models.Model):
-    enterprise = models.ForeignKey(Enterprise, on_delete=models.CASCADE)
+    enterprise = models.ForeignKey(Enterprise, on_delete=models.DO_NOTHING)
     reference = models.CharField(max_length=255, null=True, blank=True)
     location = models.CharField(max_length=255, null=True, blank=True)
 
