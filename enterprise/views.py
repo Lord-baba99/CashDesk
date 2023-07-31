@@ -122,6 +122,7 @@ def create_exercise(request):
 				else:
 					# exercise.save()
 					pass
+
 			post_data = request.POST.dict()
 			post_data['year'] = Exercise.objects.all().last().id
 			print(post_data['year'])

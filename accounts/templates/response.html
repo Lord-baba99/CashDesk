@@ -1,0 +1,27 @@
+{% if success %}
+<div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert" duration="1000">
+  <span class="font-medium">{{name}}</span> {{success_message}}
+</div>
+<button hx-get="{{url}}" hx-target="body" hx-swap="innerHTML" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
+  Se connecter 
+  <svg class="w-4 h-4 text-white dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+  </svg></button>
+{% elif error %}
+<div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <svg class="flex-shrink-0 inline w-4 h-4 mr-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+  </svg>
+  <span class="sr-only">Erreur</span>
+  <div>
+    <span class="font-medium">{{error_message}}</span>
+      <ul class="mt-1.5 ml-4 list-disc list-inside">
+      	{% for key, value in errors_list.items %}
+        <li><span class="font-medium">{{key}}:</span> {{value}}</li>
+        {% endfor %}
+    </ul>
+  </div>
+</div>
+<button hx-post="{{url}}" hx-target="#swappable_zone" hx-swap="innerHTML" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+
+{% endif %}

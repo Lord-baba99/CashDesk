@@ -1,8 +1,8 @@
     <div class="w-full p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
     	<form class="p-4 flex flex-col md:flex-row md:w-full md:align-center align-center" hx-encoding="multipart/form-data">
         {% csrf_token %}
-      <div class="w-full md:w-[20%] md:mr-3 flex md:flex-col">
-      	<div id="logoPreview"></div>
+      <div class="w-full md:w-[20%] md:mr-3 flex md:flex-col md:items-center">
+      	<div id="logoPreview" class="mb-2"></div>
     <label class="py-2 px-3 w-fit rounded-lg bg-indigo-800 text-white h-fit" for="logoInput" id="logoInputLabel1">Charger le logo</label>
     
     <input type="file" id="logoInput"  onchange="previewLogo(event)" accept="image/*" class="hidden" name="logo">
