@@ -3,6 +3,9 @@ from . views import *
 
 urlpatterns = [
 	path('', bank_home, name='bank-home'),
+	path('add-bank-form', add_bank_form, name='add-bank-form'),
+	path('bank-account-config', bank_account_config, name='bank-account-config'),
+	path('add-bank-account', add_bank_account, name='add-bank-account'),
 	path('bank-operation-views/', bank_operation_views, name='bank-operation-views'),
 	path('add-bank-operation/', add_bank_operation, name='add-bank-operation'),
 	path('delete-bank-operation/<int:exercise>/<int:month>/<int:pk>', delete_bank_operation, name='delete-bank-operation'),

@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 from django.urls import reverse
 from .forms import CashDeskOperationForm
 from .models import *
+from django.db.models import Avg, Max, Min, Sum
 
 # @login_required(redirect_field_name="cashdesk-home")
 
@@ -23,13 +24,41 @@ def cashdesk_home(request):
         f_month = 0
 
     # getting all exercise
-    exercises = Exercise.objects.all()
+    exercises = Exercise.objects.order_by('-year')
 
+    # chart
+    last_exercise = Exercise.objects.first().id
+    expenditures = CashDeskOperation.objects.filter(month__year=last_exercise, expenditure=True)
+    incomes = CashDeskOperation.objects.filter(month__year=last_exercise, income=True)
+    months = Month.objects.filter(year_id=last_exercise)
+
+    expenditures_data = []
+    incomes_data = []
+    months_data = []
+    for month in months:
+        expenditures_avg = CashDeskOperation.objects.filter(expenditure=True, month_id=month.id).aggregate(Avg('expenditure_amount'))['expenditure_amount__avg']
+        incomes_avg = CashDeskOperation.objects.filter(income=True, month_id=month.id).aggregate(Avg('income_amount'))['income_amount__avg']
+        if expenditures_avg:
+            expenditures_data.append(expenditures_avg)
+        else:
+            expenditures_data.append(0)
+        if incomes_avg:
+            incomes_data.append(incomes_avg)
+        else:
+            incomes_data.append(0)
+        months_data.append(month.name)
+
+    print(expenditures_data)
+    print(incomes_data)
+    print(months_data)
     context = {
         'page_title': 'Caisse',
         'exercises': exercises,
         'cashdesks': CashDesk.objects.all(),
         'f_month': f_month,
+        'expenditures_data': expenditures_data,
+        'incomes_data': incomes_data,
+        'months_data': months_data,
     }
     return render(request, 'cashdesk/cashdeskhome.html', context)
 
@@ -63,7 +92,7 @@ def cashdesk_operation_views(request, **kwargs):
         target = request.POST.get('search')
 
         operations = CashDeskOperation.objects.filter(
-            wording__contains=target, month__year=exercise, month_id=month)
+            wording__contains=target, month__year=exercise, month_id=month).order_by('done_date')
         context = {
             'operations': operations,
             'current_month': Month.objects.get(pk=month).id,
@@ -78,7 +107,7 @@ def cashdesk_operation_views(request, **kwargs):
         if month:
             c_month = Month.objects.get(id=month)
             operations = CashDeskOperation.objects.filter(
-                month_id=c_month.id, month__year=exercise)
+                month_id=c_month.id, month__year=exercise).order_by('done_date')
             try:
                 total_expenditure = CashDeskTotalExpenditure.objects.get(
                     month=month).month_amount
@@ -181,7 +210,7 @@ def add_cashdesk_operation(request, month=None, year=None):
 
         else:
             # print('form invalid')
-            operations = CashDeskOperation.objects.all()
+            operations = CashDeskOperation.objects.all().order_by('done_date')
             context = {
                 'Error': 'Formulaire invalide !',
                 'page_title': 'Opération bancaire',
@@ -289,3 +318,49 @@ def delete_multiple_cashdesk_operation(request):
             cashdesk_operation = CashDeskOperation.objects.get(pk=pk)
             cashdesk_operation.delete()
         return redirect('cashdesk-home')
+
+
+def add_cashdesk(request):
+    pass
+
+def cashdesk_config(request):
+    if request.POST:
+        form = CashDeskFormSet(request.POST)
+        if form.is_valid():
+            print('valid')
+            context = {
+            'success': True,
+            'success_message': 'Succès !',
+            'url': reverse('create-exercise')
+            }
+            return render(request, 'enterprise/response/next_step.html', context)
+        else:
+            errors_list = form.errors
+            context = {
+            'form': form,
+            'error': True,
+            'errors_list': errors_list,
+            'error_message': 'Les données saisies ne sont pas correctes !',
+            'url': reverse('cashdesk-config'),
+            }
+            return render(request, 'enterprise/response/next_step.html', context)
+
+    context = {
+    'enterprise': Enterprise.objects.all().first(),
+    'formset': CashDeskFormSet(),
+    'form_number': 0,
+    }
+    return render(request, 'cashdesk/cashdesk_config.html', context)
+
+def add_cashdesk_form(request):
+    if request.POST:
+        form_number = request.POST.get('form_number')
+
+        context = {
+        'form_number': int(form_number) + 1,
+        "cashdesk_order": int(request.POST.get('form-TOTAL_FORMS')) + 1
+        }
+        return render(request, 'cashdesk/cashdesk.html', context)
+
+    else:
+        return HttpResponse('The request must be POST !')

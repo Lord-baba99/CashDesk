@@ -1,12 +1,32 @@
 <form class="container p-4">
+    <div>
+        <p class="text-md text-indigo-800 font-bold">Veuilez créer un premier exercice.</p>
+    </div>
     {% csrf_token %}
     	<div class="relative z-0 w-full mb-6 group">
         <input type="number" name="year" id="floating_year" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " required />
         <label for="floating_year" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-indigo-600 peer-focus:dark:text-indigo-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Exercice Ex. 1983</label>
     </div>
        	<div class="relative z-0 w-full mb-6 group">
-        <input type="text" name="name" id="floating_month" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " required />
-        <label for="floating_month" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-indigo-600 peer-focus:dark:text-indigo-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Mois Ex. Septembre</label>
+            {% comment %}
+        <!-- <input type="text" name="name" id="floating_month" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " required /> -->
+        {% endcomment %}
+        <select name="name" id="floating_month" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " required >
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" selected>Choisir un mois</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Janvier">Janvier</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Fevrier">Fevrier</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Mars">Mars</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Avril">Avril</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Mai">Mai</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Juin">Juin</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Juillet">Juillet</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Aout">Aout</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Septembre">Septembre</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Octobre">Octobre</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Novembre">Novembre</option>
+            <option class="text-gray-900 hover:bg-indigo-800 hover:text-white" value="Decembre">Decembre</option>
+        </select>
+        <label for="floating_month" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-indigo-600 peer-focus:dark:text-indigo-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Mois</label>
     </div>
     <div class="relative z-0 w-full mb-6 group">
         <input type="number" name="start" id="floating_start" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " required />

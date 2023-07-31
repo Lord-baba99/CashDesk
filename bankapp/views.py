@@ -268,3 +268,49 @@ def delete_multiple_bank_operation(request):
             bank_operation.delete()
         return redirect('bank-home')
 
+
+def add_bank_account(request):
+    if request.POST:
+        pass
+
+def bank_account_config(request):
+    if request.POST:
+        form = BankAccountFormSet(request.POST)
+        if form.is_valid():
+            # print('valid')
+            context = {
+            'success': True,
+            'success_message': 'Succès !',
+            'url': reverse('cashdesk-config')
+            }
+            return render(request, 'enterprise/response/next_step.html', context)
+        else:
+            errors_list = form.errors
+            context = {
+            'form': form,
+            'error': True,
+            'errors_list': errors_list,
+            'error_message': 'Les données saisies ne sont pas correctes !',
+            'url': reverse('bank-account-config'),
+            }
+            return render(request, 'enterprise/response/next_step.html', context)
+
+    context = {
+    'enterprise': Enterprise.objects.all().first(),
+    'formset': BankAccountFormSet(),
+    'form_number': 0,
+    }
+    return render(request, 'bank/bank_account_config.html', context)
+
+def add_bank_form(request):
+    if request.POST:
+        form_number = request.POST.get('form_number')
+
+        context = {
+        'form_number': int(form_number) + 1,
+        "bank_order": int(request.POST.get('form-TOTAL_FORMS')) + 1
+        }
+        return render(request, 'bank/bank_account.html', context)
+
+    else:
+        return HttpResponse('The request must be POST !')

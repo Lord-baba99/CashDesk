@@ -3,6 +3,9 @@ from . views import *
 
 urlpatterns = [
     path('', cashdesk_home, name='cashdesk-home'),
+    path('add-cashdesk-form', add_cashdesk_form, name='add-cashdesk-form'),
+    path('cashdesk-config', cashdesk_config, name='cashdesk-config'),
+    path('add-cashdesk', add_cashdesk, name='add-cashdesk'),
     path('cashdesk-operation-views/', cashdesk_operation_views, name='cashdesk-operation-views'),
     path('add-cashdesk-operation/', add_cashdesk_operation, name='add-cashdesk-operation'),
     path('delete-cashdesk-operation/<int:exercise>/<int:month>/<int:pk>', delete_cashdesk_operation, name='delete-cashdesk-operation'),

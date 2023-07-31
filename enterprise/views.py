@@ -182,7 +182,7 @@ def create_enterprise(request):
 			'success': True,
 			'success_message': 'a été créé avec succès!',
 			'name': name,
-			'url': reverse('create-exercise')
+			'url': reverse('bank-account-config')
 			}
 			return render(request, 'enterprise/response/next_step.html', context)
 		else:

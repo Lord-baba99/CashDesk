@@ -1,29 +1,29 @@
 <div class="w-full p-6">
-<p class="text-2xl text-indigo-800 mx-auto">Les caisses pour <span class="font-bold">{{enterprise}}</span></p>
+<p class="text-2xl text-indigo-800 mx-auto">Ajouter les comptes bancaires pour <span class="font-bold">{{enterprise}}</span></p>
 
 <form>
-  {% csrf_token %}
-  <div>
-    <input type="hidden" name="enterprise" value="{{enterprise.id}}">
-  </div>
+	{% csrf_token %}
+	<div>
+		<input type="hidden" name="enterprise" value="{{enterprise.id}}">
+	</div>
 
-    <input type="hidden" name="form_number" value="{{form_number}}" id="form_number">
-    <input type="hidden" name="form-TOTAL_FORMS" value="0" id="id_form-TOTAL_FORMS">
-    <input type="hidden" name="form-INITIAL_FORMS" value="0" id="id_form-INITIAL_FORMS">
-  <div id="accountset" class="flex flex-wrap">
+		<input type="hidden" name="form_number" value="{{form_number}}" id="form_number">
+		<input type="hidden" name="form-TOTAL_FORMS" value="0" id="id_form-TOTAL_FORMS">
+		<input type="hidden" name="form-INITIAL_FORMS" value="0" id="id_form-INITIAL_FORMS">
+	<div id="accountset" class="flex flex-wrap">
 
-    
-  </div>
-  <div>
-    <button class="text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800 mb-4" hx-post="{% url 'add-cashdesk-form' %}" hx-target="#accountset" hx-swap="beforeend">
-      Ajouter un formulaire
-      <svg class="w-4 h-4 text-white dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+		
+	</div>
+	<div>
+		<button class="text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800 mb-4" hx-post="{% url 'add-bank-form' %}" hx-target="#accountset" hx-swap="beforeend">
+			Ajouter un formulaire
+			<svg class="w-4 h-4 text-white dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 5h1v12a2 2 0 0 1-2 2m0 0a2 2 0 0 1-2-2V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v15a2 2 0 0 0 2 2h14ZM10 4h2m-2 3h2m-8 3h8m-8 3h8m-8 3h8M4 4h3v3H4V4Z"/>
   </svg>
-    </button>
-  </div>
+		</button>
+	</div>
     <div id="swappable_zone" class="mt-4">
-    <button hx-post="{% url 'cashdesk-config' %}" hx-target="#swappable_zone" hx-swap="innerHTML" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+    <button hx-post="{% url 'bank-account-config' %}" hx-target="#swappable_zone" hx-swap="innerHTML" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
   </div>
   <script>
   function updateFormCount() {
