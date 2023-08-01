@@ -23,8 +23,9 @@ def login_user(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        # print(username, password)
+        print(username, password)
         user = authenticate(username=username, password=password)
+        print(user)
         if user:
             login(request, user)
             if url:
@@ -65,19 +66,19 @@ def signup(request):
                 }
                 return render(request, 'response.html', context)
             else:
-                print("person's count == 0" )
+                #print("person's count == 0" )
 
                 form = PersonForm(request.POST, request.FILES)
                 for x, y in labels.items():
                     if not request.POST.get(x):
                         # print(x)
                         errors_list.update({x: y})
-                print('error_list: ' ,errors_list)
+                #print('error_list: ' ,errors_list)
                 if len(errors_list) == 0:
-                    print('error_list: == 0')
+                    # print('error_list: == 0')
                     if form.is_valid():
-                        print('form valid')
-                        #form.save()
+                       #  print('form valid')
+                        form.save()
                         username = request.POST.get('username')
                         password = request.POST.get('password')
                         # user = authenticate(username=username, password=password)
@@ -91,7 +92,7 @@ def signup(request):
                         }
                         return render(request, 'response.html', context)
                     else:
-                        print('form invalid 2')
+                        # print('form invalid 2')
                         errors = form.errors
                         for key, value in labels.items():
                             if key in errors:

@@ -55,17 +55,26 @@
             <img src="{{ enterprise.logo.url }}" class="h-12 mr-3" alt="{{enterprise.name}} Logo" />
             <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">{{enterprise.name}}</span>
          </a>
+
          <div class="font-semibold font-lg">
             {{page_title}}
          </div>
             
+<div id="indicator" role="status" class="htmx-indicator">
+    <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+    </svg>
+    <span class="sr-only">Loading...</span>
+</div>
+
       </div>
    </nav>
    <!-- drawer component -->
    <div id="drawer-swipe" backdrop="false" class="print:hidden fixed z-[100] w-full overflow-y-visible bg-transparent transition-transform bottom-0 left-0 right-0 translate-y-full bottom-[68px]" tabindex="-1" aria-labelledby="drawer-swipe-label">
       <div class="relative z-50 w-full h-16 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-full left-1/2 dark:bg-gray-700 dark:border-gray-600">
          <div class="grid h-full max-w-lg grid-cols-5 mx-auto">
-            <button data-tooltip-target="tooltip-home" type="button" class="inline-flex flex-col items-center justify-center px-5 rounded-l-full hover:bg-gray-50 dark:hover:bg-gray-800 group" hx-get="{% url 'home' %}" hx-target="body" hx-swap="innerHTML" hx-push-url="true">
+            <button data-tooltip-target="tooltip-home" type="button" class="inline-flex flex-col items-center justify-center px-5 rounded-l-full hover:bg-gray-50 dark:hover:bg-gray-800 group" hx-get="{% url 'home' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" hx-push-url="true">
             <svg class="w-5 h-5 mb-1 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
             </svg>
@@ -101,7 +110,7 @@
                Etendre le menu
                <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
-            <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group" hx-get="{% url 'settings-view' %}" hx-target="body" hx-swap="innerHTML">
+            <button data-tooltip-target="tooltip-settings" type="button" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group" hx-get="{% url 'settings-view' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML">
             <svg class="w-5 h-5 mb-1 text-gray-500 dark:text-gray-400 group-hover:text-indigo-800 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2"/>
             </svg>
@@ -131,13 +140,13 @@
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</a>
                      </li>
                      <li>
-                        <a hx-get="{% url 'settings-view' %}" hx-target="body" hx-swap="innerHTML" class="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
+                        <a hx-get="{% url 'settings-view' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" hx-push-url="true" class="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Paramètre</a>
                      </li>
                      <li>
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Earnings</a>
                      </li>
                      <li>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
+                        <a hx-get="{% url 'logout' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" hx-push-url="true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Déconnection</a>
                      </li>
                   </ul>
                </div>
@@ -148,7 +157,7 @@
       <div class="h-2 bg-transparent"></div>
       
       <div class="grid grid-cols-3 gap-4 p-4 lg:grid-cols-4 bg-white mt-4">
-         <div class="p-4 rounded-lg cursor-pointer bg-indigo-700 hover:bg-indigo-800 dark:hover:bg-gray-600 dark:bg-gray-700" hx-get="{% url 'cashdesk-home' %}" hx-target="body" hx-swap="innerHTML" hx-push-url="true">
+         <div class="p-4 rounded-lg cursor-pointer bg-indigo-700 hover:bg-indigo-800 dark:hover:bg-gray-600 dark:bg-gray-700" hx-get="{% url 'cashdesk-home' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" hx-push-url="true">
             <div class="flex justify-center items-center p-2 mx-auto mb-2 bg-white dark:bg-gray-600 rounded-full w-[48px] h-[48px] max-w-[48px] max-h-[48px]">
                <svg class="inline w-5 h-5 text-indigo-800 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 2a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1M2 5h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm8 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
@@ -156,7 +165,7 @@
             </div>
             <div class="font-medium text-white text-center dark:text-gray-400">Caisse</div>
          </div>
-         <div class="p-4 rounded-lg cursor-pointer bg-indigo-700 hover:bg-indigo-800 dark:hover:bg-gray-600 dark:bg-gray-700" hx-get="{% url 'bank-home' %}" hx-target="body" hx-swap="innerHTML" hx-push-url="true">
+         <div class="p-4 rounded-lg cursor-pointer bg-indigo-700 hover:bg-indigo-800 dark:hover:bg-gray-600 dark:bg-gray-700" hx-get="{% url 'bank-home' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" hx-push-url="true">
             <div class="flex justify-center items-center p-2 mx-auto mb-2 bg-white dark:bg-gray-600 rounded-full w-[48px] h-[48px] max-w-[48px] max-h-[48px]">
                <svg class="w-5 h-5 text-indigo-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 14">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 9h2m3 0h5M1 5h18M2 1h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1Z"/>

@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
 <form class="container p-4" hx-encoding="multipart/form-data">
     {% csrf_token %}
     <div class="w-full flex justify-center items-center">
@@ -161,3 +163,4 @@
         return true;
     }
 </script>
+{% endblock content %}

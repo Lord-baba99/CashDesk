@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
     <p class="flex justify-between items-center">
-        <button class="bg-indigo-800 px-4 py-2 text-white font-bold w-auto rounded-lg align-middle" hx-get="{% url 'cashdesk-operation-views' %}?current_month={{month}}&exercise={{exercise}}" hx-target="body"
+        <button class="bg-indigo-800 px-4 py-2 text-white font-bold w-auto rounded-lg align-middle" hx-get="{% url 'cashdesk-operation-views' %}?current_month={{month}}&exercise={{exercise}}" hx-indicator="#indicator" hx-target="body"
         hx-swap="innerHTML">
         <span class="inline-block">
             <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">

@@ -278,6 +278,8 @@ def bank_account_config(request):
         form = BankAccountFormSet(request.POST)
         if form.is_valid():
             # print('valid')
+            for x in form:
+                x.save()
             context = {
             'success': True,
             'success_message': 'Succès !',
@@ -286,6 +288,7 @@ def bank_account_config(request):
             return render(request, 'enterprise/response/next_step.html', context)
         else:
             errors_list = form.errors
+            print(errors_list)
             context = {
             'form': form,
             'error': True,
@@ -294,7 +297,6 @@ def bank_account_config(request):
             'url': reverse('bank-account-config'),
             }
             return render(request, 'enterprise/response/next_step.html', context)
-
     context = {
     'enterprise': Enterprise.objects.all().first(),
     'formset': BankAccountFormSet(),
@@ -308,7 +310,8 @@ def add_bank_form(request):
 
         context = {
         'form_number': int(form_number) + 1,
-        "bank_order": int(request.POST.get('form-TOTAL_FORMS')) + 1
+        "bank_order": int(request.POST.get('form-TOTAL_FORMS')) + 1,
+        'enterprise': Enterprise.objects.all().first(),
         }
         return render(request, 'bank/bank_account.html', context)
 

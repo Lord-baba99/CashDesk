@@ -8,4 +8,5 @@ urlpatterns = [
 	path('create-month/<int:exercise>/', create_month, name='create-month'),
 	path('create-enterprise/', create_enterprise, name='create-enterprise'),
 	path('create-exercise/', create_exercise, name='create-exercise'),
+	path('connect-transition/', connect_transition, name="connect-transition")
 ]

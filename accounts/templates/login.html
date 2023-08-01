@@ -11,7 +11,7 @@ Connection
   <h1 class="text-lg text-indigo-800 font-bold mb-4">Se connecter</h1>
   <div class="">
       <p>Vous n'avez pas de compte ?
-          <a hx-get="{% url 'signup' %}" hx-push-url="true" hx-target="closest div" hx-swap="innerHTML" class="text-indigo-800 hover:cursor-pointor">Inscrivez-vous ici !</a>
+          <a hx-get="{% url 'signup' %}" hx-push-url="true" hx-target="body" hx-swap="innerHTML" class="text-indigo-800 hover:cursor-pointor">Inscrivez-vous ici !</a>
       </p>
   </div>
   <div>{{error_message}}</div>
@@ -37,7 +37,7 @@ Connection
   </span>
   <input type="password" id="website-password" class="rounded-none rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-indigo-500 focus:border-indigo-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="••••••••" name="password">
 </div>
-    <button class="mt-4 py-2 px-3 bg-indigo-800 text-white font-medium rounded-lg" type="submit">Se connecter</button>
+    <button hx-post="{% url 'login' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" class="mt-4 py-2 px-3 bg-indigo-800 text-white font-medium rounded-lg">Se connecter</button>
     </div>
 
   </form>

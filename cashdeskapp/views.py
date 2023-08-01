@@ -48,9 +48,9 @@ def cashdesk_home(request):
             incomes_data.append(0)
         months_data.append(month.name)
 
-    print(expenditures_data)
-    print(incomes_data)
-    print(months_data)
+    # print(expenditures_data)
+    # print(incomes_data)
+    # print(months_data)
     context = {
         'page_title': 'Caisse',
         'exercises': exercises,
@@ -328,6 +328,8 @@ def cashdesk_config(request):
         form = CashDeskFormSet(request.POST)
         if form.is_valid():
             print('valid')
+            for x in form:
+                x.save()
             context = {
             'success': True,
             'success_message': 'Succès !',
@@ -358,7 +360,8 @@ def add_cashdesk_form(request):
 
         context = {
         'form_number': int(form_number) + 1,
-        "cashdesk_order": int(request.POST.get('form-TOTAL_FORMS')) + 1
+        "cashdesk_order": int(request.POST.get('form-TOTAL_FORMS')) + 1,
+        'enterprise': Enterprise.objects.all().first(),
         }
         return render(request, 'cashdesk/cashdesk.html', context)
 

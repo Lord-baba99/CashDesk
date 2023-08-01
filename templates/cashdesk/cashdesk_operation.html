@@ -5,7 +5,7 @@
     <ul class="flex -mb-px pb-2">
       {% for month in months %}
         <li class="mr-2 bg-indigo-700 rounded-lg h-fit block">
-          <a hx-get="{% url 'cashdesk-operation-views' %}?current_month={{month.id}}&exercise={{exercise.id}}" hx-target="body" hx-swap="innerHTML" class="px-4 py-3 text-lg text-white font-medium border-b-2 border-transparent rounded-t-lg hover:text-white hover:border-indigo-300 dark:hover:text-indigo-300" aria-current="page">{{ month.name|capfirst }}</a>
+          <a hx-get="{% url 'cashdesk-operation-views' %}?current_month={{month.id}}&exercise={{exercise.id}}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" class="px-4 py-3 text-lg text-white font-medium border-b-2 border-transparent rounded-t-lg hover:text-white hover:border-indigo-300 dark:hover:text-indigo-300" aria-current="page">{{ month.name|capfirst }}</a>
         </li>
         {% empty %}
       </ul>
@@ -33,6 +33,11 @@
                   <div>
                     <label for="name_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom du mois</label>
                     <input type="text" name="name" id="name_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="janvier" required>
+                    <select>
+                      <option>
+                        
+                      </option>
+                    </select>
                   </div>
                   <div>
                     <label for="start_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Debut</label>
@@ -46,7 +51,7 @@
                     <label for="year_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Exercice encours</label>
                     <input type="number" name="year" id="year_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white hidden" value="{{exercise.id}}" required>
                   </div>
-                  <button type="submit" hx-post="{% url 'create-month' exercise=exercise.id %}" hx-target="body" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+                  <button type="submit" hx-post="{% url 'create-month' exercise=exercise.id %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
                 </form>
               </div>
             </div>
@@ -100,7 +105,7 @@
                     <label for="year_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Exercice encours</label>
                     <input type="number" name="year" id="year_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white hidden" value="{{exercise.id}}" required>
                   </div>
-                  <button type="submit" hx-post="{% url 'create-month' exercise=exercise.id %}" hx-target="body" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+                  <button type="submit" hx-post="{% url 'create-month' exercise=exercise.id %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
                 </form>
               </div>
             </div>
@@ -249,7 +254,7 @@
             <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
               Ajouter une nouvelle operation de caisse
-              <button hx-get="{% url 'add-cashdesk-operation' %}" hx-swap="innerHTML" hx-target="body" hx-push-url="true">
+              <button hx-get="{% url 'add-cashdesk-operation' %}" hx-swap="innerHTML" hx-indicator="#indicator" hx-target="body">
               <svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11v4.833A1.166 1.166 0 0 1 13.833 17H2.167A1.167 1.167 0 0 1 1 15.833V4.167A1.166 1.166 0 0 1 2.167 3h4.618m4.447-2H17v5.768M9.111 8.889l7.778-7.778"/>
               </svg>
@@ -342,7 +347,7 @@
                 <textarea id="wording" name='wording' rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="Veillez décrire l'opération ici !" required=""></textarea>
               </div>
             </div>
-            <button type="button" hx-post="{% url 'add-cashdesk-operation' %}" hx-target="body" hx-swap="innerHTML" class="text-white inline-flex items-center bg-indigo-800 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
+            <button type="button" hx-post="{% url 'add-cashdesk-operation' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" class="text-white inline-flex items-center bg-indigo-800 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
           <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
           Enregistrer
           </button>

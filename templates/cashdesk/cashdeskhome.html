@@ -23,7 +23,7 @@ text-xl font-bold">Exercices</h1>
 			</div>
 			{% for exercise in exercises %}
 		<div >
-			<button hx-get="{% url 'cashdesk-operation-views' %}?exercise={{exercise.id}}&current_month={{f_month.id}}" hx-target="body" hx-swap="innerHTML" class="bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg">{{exercise.year}}</button>
+			<button hx-get="{% url 'cashdesk-operation-views' %}?exercise={{exercise.id}}&current_month={{f_month.id}}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" class="bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg">{{exercise.year}}</button>
 		</div>
 		{% empty %}
 		</div>
@@ -72,7 +72,10 @@ text-xl font-bold">Exercices</h1>
 			    }]
 			  },
 			  options: {
-			    legend: {display: false}
+			    legend: {
+			    	display: true,
+			    	labels: ['Dépense', 'Recette', 'Données statiques']
+			    }
 			  }
 			});
 			};

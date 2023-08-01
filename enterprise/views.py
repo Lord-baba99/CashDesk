@@ -120,26 +120,25 @@ def create_exercise(request):
 					}
 					return render(request, 'enterprise/response/next_step.html', context)
 				else:
-					# exercise.save()
-					pass
+					exercise.save()
 
 			post_data = request.POST.dict()
 			post_data['year'] = Exercise.objects.all().last().id
-			print(post_data['year'])
+			# print(post_data['year'])
 			form = MonthForm(post_data)
 		else:
 			pass
 			
 
 		if form.is_valid():
-			print("form valid ")
-			# form.save()
+			# print("form valid ")
+			form.save()
 			name = request.POST['year']
 			context = {
 			'success': True,
 			'success_message': f"L'exercice {name} a été créé avec succès!",
 			'name': name,
-			'url': reverse('signup')
+			'url': reverse('connect-transition')
 			}
 			return render(request, 'enterprise/response/next_step.html', context)
 		else:
@@ -156,8 +155,8 @@ def create_exercise(request):
 			# print(errors_list)
 			# print('form invalid', request.FILES, ' === ', request.POST)
 			# print(errors_list)
-			print(form)
-			print(errors_list)
+			# print(form)
+			# print(errors_list)
 			context = {
 			'form': form,
 			'error': True,
@@ -176,7 +175,7 @@ def create_enterprise(request):
 		form = EnterpriseForm(request.POST, request.FILES)
 		if form.is_valid():
 			# print("form valid ")
-			# form.save()
+			form.save()
 			name = request.POST['name']
 			context = {
 			'success': True,
@@ -208,3 +207,6 @@ def create_enterprise(request):
 			}
 			return render(request, 'enterprise/response/next_step.html', context)
 	return render(request, 'enterprise/exercise_config.html')
+
+def connect_transition(request):
+	return render(request, 'enterprise/connect.html')
