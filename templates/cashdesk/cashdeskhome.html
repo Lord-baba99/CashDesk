@@ -3,43 +3,55 @@
 {% block content %}
 <div class="w-full">
 	<div class="flex justify-center py-4">
-		<h1 class="font-medium bg-indigo-400 text-white w-[50vw] align-middle
-text-xl font-bold">Exercices</h1>
+		<h1 class="font-medium bg-white text-indigo-800 text-center w-[50vw] align-middle
+text-2xl font-bold p-2 rounded-lg">Journal de Caisse</h1>
 
 	</div>
 	<div class="flex">
-		<div class="md:w-[40%] me-4 shadow-lg bg-white">
-			<div>
-				<button class="bg-indigo-800 text-white font-medium rounded-lg py-2 px-3">Ajouter un Exercice</button>
+
+		<div class="md:w-[40%] me-4 shadow-lg bg-white rounded-lg p-2">
+			<div class="hidden">
+				<button class="bg-indigo-800 text-white font-medium rounded-lg py-2 px-3 ">Ajouter un Exercice</button>
 				<div>
 					<p>
 						Vous avez <span class="text-indigo-800 font-bold">2 Exercices</span>
 					</p>
 				</div>
 			</div>
-			<div>
+			<div class="hidden">
 				<p>Vous avez au total:</p>
 				<h4>15 operations</h4>
 			</div>
+			<div>
 			{% for exercise in exercises %}
-		<div >
-			<button hx-get="{% url 'cashdesk-operation-views' %}?exercise={{exercise.id}}&current_month={{f_month.id}}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" class="bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg">{{exercise.year}}</button>
+		<div class="m-auto w-fit">
+			<button hx-get="{% url 'cashdesk-operation-views' %}?exercise={{exercise.id}}&current_month={{f_month.id}}"
+					hx-indicator="#indicator" hx-target="body"
+					hx-swap="innerHTML" class="bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg">Opérations de l'exercice {{exercise.year}}</button>
 		</div>
 		{% empty %}
-		</div>
 		<div class="col-span-2 lg:col-span-6 md:col-span-3">
 			<p>Aucun exercice n'a été crée pour l'instant !</p>
 		</div>
 		{% endfor %}
-		</div>
-		<div class=" shadow-lg bg-white w-full">
+				</div>
+			</div>
+
+		<div class=" shadow-lg bg-white w-full rounded-lg">
 			<div class="hidden">
 				<canvas id="expenditure_chart" ></canvas>
 			</div>
 			<div class="hidden">
 				<canvas id="income_chart" ></canvas>
 			</div>
-			<div>
+			<div class="p-2">
+				<div class="flex flex-col items-center justify-center">
+					<p class="text-gray-600 font-bold underline mb-4">Legende : </p>
+					<p>
+						<span class="inline-block mx-2 py-1 px-3 rounded-xl bg-red-700 font-bold text-white border-2 border-red-500">Dépense</span>
+						<span class="inline-block mx-2 py-1 px-3 rounded-xl bg-green-700 font-bold text-white border-2 border-green-500">Récette</span>
+					</p>
+				</div>
 				<canvas id="year_chart" class=""></canvas>
 			</div>
 		</div>
@@ -65,10 +77,6 @@ text-xl font-bold">Exercices</h1>
 			      data: {{incomes_data|safe}},
 			      borderColor: "green",
 			      fill: false
-			    },{
-			      data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
-			      borderColor: "blue",
-			      fill: false
 			    }]
 			  },
 			  options: {
@@ -82,6 +90,5 @@ text-xl font-bold">Exercices</h1>
 
 		</script>
 		</div>
-	</div>
-</div>
+		</div>
 {% endblock content %}

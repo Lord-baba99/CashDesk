@@ -3,12 +3,12 @@
 {% block content %}
 <div class="w-full">
 	<div class="flex justify-center py-4">
-		<h1 class="font-medium bg-indigo-400 text-white w-[50vw] align-middle
-text-xl font-bold">Exercices</h1>
+		<h1 class="font-medium bg-white text-indigo-800 text-center w-[50vw] align-middle
+text-2xl font-bold p-2 rounded-lg">Journal de Banque</h1>
 	</div>
 	<div class="flex">
-		<div class="md:w-[40%] me-4 shadow-lg bg-white">
-			<div>
+		<div class="md:w-[40%] me-4 shadow-lg bg-white rounded-lg p-2">
+			<div class="hidden">
 				<button class="bg-indigo-800 text-white font-medium rounded-lg py-2 px-3">Ajouter un Exercice</button>
 				<div>
 					<p>
@@ -16,36 +16,80 @@ text-xl font-bold">Exercices</h1>
 					</p>
 				</div>
 			</div>
-			<div>
+			<div class="hidden">
 				<p>Vous avez au total:</p>
 				<h4>15 operations</h4>
 			</div>
-		</div>
-		<div class="grid grid-cols-2 lg:grid-cols-6 md:grid-cols-3 gap-4 shadow-lg bg-white w-full">
-			<div class="col-span-2 lg:col-span-6 md:col-span-3">
 			<div>
-				<button class="bg-indigo-800 text-white font-medium rounded-lg py-2 px-3">Ajouter un Exercice</button>
-				<div>
-					<p>
-						Vous avez <span class="text-indigo-800 font-bold">2 Exercices</span>
-					</p>
-				</div>
-			</div>
-			<div>
-				<p>Vous avez au total:</p>
-				<h4>15 operations</h4>
-			</div>
-		</div>
-		{% for exercise in exercises %}
-		<div >
-			<button hx-get="{% url 'bank-operation-views' %}?exercise={{exercise.id}}&current_month={{f_month.id}}" hx-target="body" hx-swap="innerHTML" class="bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg">{{exercise.year}}</button>
+				{% for exercise in exercises %}
+		<div class="m-auto w-fit">
+			<button hx-get="{% url 'bank-operation-views' %}?exercise={{exercise.id}}&current_month={{f_month.id}}"
+					hx-target="body" hx-swap="innerHTML"
+					class="bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg">Opérations de l'exercice {{exercise.year}}</button>
 		</div>
 		{% empty %}
-		</div>
+
 		<div class="col-span-2 lg:col-span-6 md:col-span-3">
 			<p>Aucun exercice n'a été crée pour l'instant !</p>
 		</div>
 		{% endfor %}
-	</div>
+			</div>
+		</div>
+
+
+	<div class="shadow-lg bg-white w-full rounded-lg">
+
+		<div class="hidden">
+				<canvas id="expenditure_chart" ></canvas>
+			</div>
+			<div class="hidden">
+				<canvas id="income_chart" ></canvas>
+			</div>
+			<div class="p-2">
+				<div class="flex flex-col items-center justify-center">
+					<p class="text-gray-600 font-bold underline mb-4">Legende : </p>
+					<p>
+						<span class="inline-block mx-2 py-1 px-3 rounded-xl bg-red-700 font-bold text-white border-2 border-red-500">Dépense</span>
+						<span class="inline-block mx-2 py-1 px-3 rounded-xl bg-green-700 font-bold text-white border-2 border-green-500">Récette</span>
+					</p>
+				</div>
+				<canvas id="year_chart" class=""></canvas>
+			</div>
+			</div>
+	<script type="text/javascript">
+				charts();
+			/*document.addEventListener('htmx:afterSwap', function(event) {
+
+			if (event.detail.target.querySelector('#year_chart')) {
+			charts();
+			}
+			});*/
+
+			function charts(){
+				new Chart("year_chart", {
+			  type: "line",
+			  data: {
+			    labels: ['Mois1', 'Mois2', 'Mois3', 'Mois4', 'Mois5', 'Mois6', 'Mois7', 'Mois8', 'Mois9', 'Mois10'],
+			    datasets: [{
+			      data: [300,1700,1000,3000,2000,4000,8000,5000,6200,1700],
+			      borderColor: "red",
+			      fill: false
+			    },{
+			      data: [300,500,2000,3000,8000,2000,1000,5000,3200,5100],
+			      borderColor: "green",
+			      fill: false
+			    }]
+			  },
+			  options: {
+			    legend: {
+			    	display: true,
+			    	labels: ['Dépense', 'Recette', 'Données statiques']
+			    }
+			  }
+			});
+			};
+
+		</script>
+		</div>
 </div>
 {% endblock content %}
