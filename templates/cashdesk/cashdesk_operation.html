@@ -30,12 +30,48 @@
                 <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Ajouter un mois</h3>
                 <form class="space-y-6">
                   {% csrf_token %}
+                  <input type="checkbox" name="from_cashdesk" checked class="hidden">
                   <div>
-                    <label for="name_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom du mois</label>
-                    <input type="text" name="name" id="name_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="janvier" required>
-                    <select>
-                      <option>
-                        
+                    <label for="name_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mois</label>
+                    <select name="name" id="name_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                      <option selected>
+                      Choisir un mois
+                      </option>
+                      <option value="Janvier">
+                        Janvier
+                      </option>
+                      <option value="Fevrier">
+                      Fevrier
+                      </option>
+                      <option value="Mars">
+                      Mars
+                      </option>
+                      <option value="Avril">
+                      Avril
+                      </option>
+                      <option value="Mai">
+                      Mai
+                      </option>
+                      <option value="Juin">
+                      Juin
+                      </option>
+                      <option value="Juillet">
+                      Juillet
+                      </option>
+                      <option value="Août">
+                      Août
+                      </option>
+                      <option value="Septembre">
+                      Septembre
+                      </option>
+                      <option value="Octobre">
+                      Octobre
+                      </option>
+                      <option value="Novembre">
+                      Novembre
+                      </option>
+                      <option value="Décembre">
+                      Décembre
                       </option>
                     </select>
                   </div>
@@ -89,9 +125,52 @@
                 <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Ajouter un mois</h3>
                 <form class="space-y-6">
                   {% csrf_token %}
+                  <input type="checkbox" name="from_cashdesk" checked class="hidden">
                   <div>
                     <label for="name_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom du mois</label>
-                    <input type="text" name="name" id="name_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="janvier" required>
+                    <select name="name" id="name_id"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      required>
+                      <option selected>
+                        Choisir un mois
+                      </option>
+                      <option value="Janvier">
+                        Janvier
+                      </option>
+                      <option value="Fevrier">
+                        Fevrier
+                      </option>
+                      <option value="Mars">
+                        Mars
+                      </option>
+                      <option value="Avril">
+                        Avril
+                      </option>
+                      <option value="Mai">
+                        Mai
+                      </option>
+                      <option value="Juin">
+                        Juin
+                      </option>
+                      <option value="Juillet">
+                        Juillet
+                      </option>
+                      <option value="Août">
+                        Août
+                      </option>
+                      <option value="Septembre">
+                        Septembre
+                      </option>
+                      <option value="Octobre">
+                        Octobre
+                      </option>
+                      <option value="Novembre">
+                        Novembre
+                      </option>
+                      <option value="Décembre">
+                        Décembre
+                      </option>
+                    </select>
                   </div>
                   <div>
                     <label for="start_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Debut</label>
