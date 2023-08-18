@@ -1,13 +1,20 @@
 from enterprise.models import Enterprise
 
-if Enterprise.objects.all().count() > 0:
-    enterprise = Enterprise.objects.all().last()
-else: enterprise = "unknow"
+enterprise = Enterprise.objects.all().last()
 
-#print(enterprise)
+
+_global_context = {}
+
+
+def update_global_context_variable(enterprise):
+    global _global_context
+    _global_context["enterprise"] = enterprise
+
+
 def global_context(request):
-    # Variables de contexte globales
+    enterprise = _global_context.get("enterprise")
+    print(enterprise)
     context = {
-        'enterprise': enterprise,
+        "enterprise": enterprise,
     }
     return context

@@ -5,12 +5,13 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Document</title>
+      <title>{{enterprise.name}} - {{page_title}} {% block title %}{% endblock title %}</title>
       <script src="{% static 'flowbite/packages/flowbite.min.js' %}" defer></script>
       <script src="{% static 'sweetalert/sweetalert.js' %}" defer></script>
       <script src="{% static 'htmx/htmx.min.js' %}"></script>
       <script src="{% static 'jQuery/jQuery.js' %}"></script>
       <script src="{% static 'chart.js/chart.js.min.js' %}"></script>
+      <link rel="icon" href="{{enterprise.logo.url}}">
       {% compress css %}
       <link rel="stylesheet" href="{% static 'out/output.css' %}">
    {% endcompress %}

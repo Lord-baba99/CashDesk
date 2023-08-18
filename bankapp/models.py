@@ -17,7 +17,8 @@ class BankAccount(models.Model):
     location = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return self.name + ' << ' + self.reference + ' >>'
+        return self.name + " << " + self.reference + " >>"
+
 
 class BankOperation(models.Model):
     month = models.ForeignKey(Month, on_delete=models.DO_NOTHING)
@@ -40,7 +41,7 @@ class BankOperation(models.Model):
         return self.reference
 
     def get_absolute_url(self):
-        return reverse('bank-operation-detail', kwargs={"pk": self.pk})
+        return reverse("bank-operation-detail", kwargs={"pk": self.pk})
 
 
 class BankReferenceGenerator(models.Model):
@@ -64,8 +65,9 @@ class BankReferenceGenerator(models.Model):
         date_obj = datetime.strptime(str(self.date)[:10], "%Y-%m-%d")
         date_formatted = date_obj.strftime("%d%m%y")
         self.date_str = date_formatted
-        self.full_name = f'{self.initial}-{self.number}{self.date_str}-{self.ending_letter}'
-
+        self.full_name = (
+            f"{self.initial}-{self.number}{self.date_str}-{self.ending_letter}"
+        )
 
     def __str__(self):
         return self.full_name
@@ -75,11 +77,13 @@ class BankReferenceGenerator(models.Model):
         self.name_formator()
         super().save(*args, **kwargs)
 
+
 # @receiver(pre_save, sender=BankReferenceGenerator)
 # def pre_save_reference_generator(sender, instance, **kwargs):
 #     instance.name_formator()
 
 # statitistic
+
 
 class BankTotalExpenditure(models.Model):
     month_amount = models.BigIntegerField(default=0)
@@ -87,16 +91,17 @@ class BankTotalExpenditure(models.Model):
 
     def sum(self):
         operations = BankOperation.objects.filter(month_id=self.month, expenditure=True)
-        amount_sum = operations.aggregate(Sum('expenditure_amount'))
-        if amount_sum['expenditure_amount__sum']:
-            self.month_amount = amount_sum['expenditure_amount__sum']
+        amount_sum = operations.aggregate(Sum("expenditure_amount"))
+        if amount_sum["expenditure_amount__sum"]:
+            self.month_amount = amount_sum["expenditure_amount__sum"]
             self.save()
         else:
             self.month_amount = 0
             self.save()
 
     def __str__(self):
-        return f'Total dépense {self.month}'
+        return f"Total dépense {self.month}"
+
 
 class BankTotalIncome(models.Model):
     month_amount = models.BigIntegerField(default=0)
@@ -104,16 +109,16 @@ class BankTotalIncome(models.Model):
 
     def sum(self):
         operations = BankOperation.objects.filter(month_id=self.month, income=True)
-        amount_sum = operations.aggregate(Sum('income_amount'))
-        if amount_sum['income_amount__sum']:
-            self.month_amount = amount_sum['income_amount__sum']
+        amount_sum = operations.aggregate(Sum("income_amount"))
+        if amount_sum["income_amount__sum"]:
+            self.month_amount = amount_sum["income_amount__sum"]
             self.save()
         else:
             self.month_amount = 0
             self.save()
 
     def __str__(self):
-        return f'Total récette {self.month}'
+        return f"Total récette {self.month}"
 
 
 class BankDeferrerOperation(models.Model):
@@ -142,17 +147,21 @@ class BankDeferrerOperation(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'Report du mois de {self.month}'
+        return f"Report du mois de {self.month}"
+
 
 # Signal post_save pour mettre à jour BankDeferrerOperation lorsque BankTotalOperation est enregistrée ou mise à jour
-@receiver(post_save, sender='bankapp.BankTotalOperation')
+@receiver(post_save, sender="bankapp.BankTotalOperation")
 def update_bank_deferrer_operation(sender, instance, **kwargs):
     try:
-        bank_deferrer_operation = BankDeferrerOperation.objects.get(month_id=instance.month_id)
+        bank_deferrer_operation = BankDeferrerOperation.objects.get(
+            month_id=instance.month_id
+        )
         total = instance.month_amount
         bank_deferrer_operation.update_finall(total)
     except BankDeferrerOperation.DoesNotExist:
         pass
+
 
 class BankTotalOperation(models.Model):
     month_amount = models.BigIntegerField(default=0)
@@ -161,11 +170,13 @@ class BankTotalOperation(models.Model):
     def calc(self):
         defer = BankDeferrerOperation.objects.get(month_id=self.month).initial
         total_income = BankTotalIncome.objects.get(month_id=self.month).month_amount
-        total_expenditure = BankTotalExpenditure.objects.get(month_id=self.month).month_amount
+        total_expenditure = BankTotalExpenditure.objects.get(
+            month_id=self.month
+        ).month_amount
         # print('(model) total depense ', total_income)
         result = defer + total_income - total_expenditure
         self.month_amount = result
         self.save()
 
     def __str__(self):
-        return f'Total solde mois de {self.month}'
+        return f"Total solde mois de {self.month}"
