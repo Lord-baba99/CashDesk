@@ -12,7 +12,7 @@ def update_global_context_variable(enterprise):
 
 
 def global_context(request):
-    enterprise = _global_context.get("enterprise")
+    # enterprise = _global_context.get("enterprise")
     print(enterprise)
     context = {
         "enterprise": enterprise,

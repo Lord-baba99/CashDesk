@@ -14,7 +14,7 @@ Connection
           <a hx-get="{% url 'signup' %}" hx-push-url="true" hx-target="body" hx-swap="innerHTML" class="text-indigo-800 hover:cursor-pointor">Inscrivez-vous ici !</a>
       </p>
   </div>
-  <div>{{error_message}}</div>
+  <div class="text-red-500">{{error_message}}</div>
   <form hx-post="{% url 'login' %}" hx-target='body' hx-swap='innerHTML' class="">
     {% csrf_token %}
     <div class="flex flex-col">

@@ -12,9 +12,13 @@
       <script src="{% static 'jQuery/jQuery.js' %}"></script>
       <script src="{% static 'chart.js/chart.js.min.js' %}"></script>
       <link rel="icon" href="{{enterprise.logo.url}}">
-      {% compress css %}
-      <link rel="stylesheet" href="{% static 'out/output.css' %}">
-   {% endcompress %}
+      {% if dev %}
+         {% compress css %}
+            <link rel="stylesheet" href="{% static 'out/output.css' %}">
+         {% endcompress %}
+      {% else %}
+            <link rel="stylesheet" href="{% static 'out/output.css' %}">
+      {% endif %}
    <style>
    
    /* scrollbar */
