@@ -11,6 +11,7 @@ import enterprise.urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
+    path('shutdown/', shutdown, name='shutdown'),
     path('caisse/', include(cashdeskapp.urls)),
     path('banque/', include(bankapp.urls)),
     path('account/', include(accounts.urls)),

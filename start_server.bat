@@ -21,13 +21,12 @@ if exist "%LOCK_FILE%" (
     start /b python manage.py runserver 8001
     
     REM Attendez quelques secondes pour que le serveur démarre
-    timeout /t 5
+    timeout /t 10
     
     REM Ouvrez le navigateur à l'adresse localhost:8001
     start "" "http://localhost:8001"
     
-    REM Supprimez le fichier de verrouillage une fois que le serveur s'est arrêté
-    del "%LOCK_FILE%"
+    
 )
 
 REM Attendez quelques secondes pour que l'utilisateur puisse voir le message
