@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from enterprise.models import Enterprise
 from CashDesk.settings import COMPRESS_ENABLED
@@ -12,7 +13,8 @@ def home(request):
 		return render(request, 'index.html')
 
 def shutdown(request):
-    script = '..\kill_server.py'
+    script = 'python kill_server.py'
     if request.POST:
         subprocess.call(script, shell=True)
-        return HttpResponse()
+        return HttpResponse('SERVER ETEINT')
+    

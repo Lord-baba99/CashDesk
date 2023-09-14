@@ -154,7 +154,10 @@
                         <a hx-get="{% url 'logout' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" hx-push-url="true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Déconnection</a>
                      </li>
                      <li>
-                        <a hx-get="{% url 'shutdown' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" hx-push-url="true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Eteindre</a>
+                        <form>
+                           {% csrf_token %}
+                           <a hx-post="{% url 'shutdown' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" hx-push-url="true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Eteindre</a>
+                        </form>
                      </li>
                   </ul>
                </div>
