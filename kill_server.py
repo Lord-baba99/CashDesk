@@ -24,7 +24,7 @@ if pid_match:
     
     print('Serveur mis en arret !!!')
     # Supprimer le lockfile
-    del_lock_file = 'del venv\\server.lock'
+    del_lock_file = 'del server.lock'
     subprocess.call(del_lock_file, shell=True)
 
 else:

@@ -4,7 +4,7 @@ REM Chemin vers votre environnement virtuel
 set VENV_PATH=venv
 
 REM Nom du fichier de verrouillage
-set LOCK_FILE=%VENV_PATH%\server.lock
+set LOCK_FILE=server.lock
 
 REM Vérifiez si le fichier de verrouillage existe
 if exist "%LOCK_FILE%" (
