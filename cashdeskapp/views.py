@@ -17,7 +17,7 @@ from django.db.models import Avg, Max, Min, Sum
 def cashdesk_home(request):
     update()
     # getting the last month as default for operation views
-    month = Month.objects.last()
+    month = Month.objects.filter(is_active=True).last()
     if month:
         f_month = month
     else:
@@ -90,10 +90,12 @@ def cashdesk_operation_views(request, **kwargs):
     param: month = str --> the default month
     param: year = int --> the current year
     """
+    
     update()
     # getting the current month to show up the operations view
     month = request.GET.get("current_month")
     exercise = request.GET.get("exercise")
+    # print(month)
 
     if request.POST:
         # print(request.POST)
@@ -103,74 +105,74 @@ def cashdesk_operation_views(request, **kwargs):
         operations = CashDeskOperation.objects.filter(
             wording__contains=target, month__year=exercise, month_id=month
         ).order_by("done_date")
-        """context = {
+        context = {
             'operations': operations,
             'current_month': Month.objects.get(pk=month).id,
             'exercise': Exercise.objects.get(pk=exercise),
         }
-        return render(request, 'cashdesk/search_cashdesk_operation.html', context)"""
+        return render(request, 'cashdesk/search_cashdesk_operation.html', context)
     else:
         operations = CashDeskOperation.objects.filter(
             month_id=month, month__year=exercise
         ).order_by("done_date")
 
-    # print('mois ', month)
+        # print('mois ', month)
 
-    if month:
-        # print(month, "month")
-        c_month = Month.objects.get(id=month)
-        try:
-            total_expenditure = CashDeskTotalExpenditure.objects.get(
-                month=month
-            ).month_amount
-            print(total_expenditure, "total expenditure")
-        except CashDeskTotalExpenditure.DoesNotExist:
+        if month:
+            # print(month, "month")
+            c_month = Month.objects.get(id=month)
+            try:
+                total_expenditure = CashDeskTotalExpenditure.objects.get(
+                    month=month
+                ).month_amount
+                # print(total_expenditure, "total expenditure")
+            except CashDeskTotalExpenditure.DoesNotExist:
+                total_expenditure = 0
+
+            try:
+                total_income = CashDeskTotalIncome.objects.get(month=month).month_amount
+            except CashDeskTotalIncome.DoesNotExist:
+                total_income = 0
+            try:
+                total_operation = CashDeskTotalOperation.objects.get(
+                    month=month
+                ).month_amount
+            except CashDeskTotalOperation.DoesNotExist:
+                total_operation = 0
+            try:
+                deferrer = CashDeskDeferrerOperation.objects.get(month=month).initial
+            except CashDeskDeferrerOperation.DoesNotExist:
+                deferrer = 0
+        else:
             total_expenditure = 0
-
-        try:
-            total_income = CashDeskTotalIncome.objects.get(month=month).month_amount
-        except CashDeskTotalIncome.DoesNotExist:
             total_income = 0
-        try:
-            total_operation = CashDeskTotalOperation.objects.get(
-                month=month
-            ).month_amount
-        except CashDeskTotalOperation.DoesNotExist:
             total_operation = 0
-        try:
-            deferrer = CashDeskDeferrerOperation.objects.get(month=month).initial
-        except CashDeskDeferrerOperation.DoesNotExist:
             deferrer = 0
-    else:
-        total_expenditure = 0
-        total_income = 0
-        total_operation = 0
-        deferrer = 0
-        # print('total depense :', total_expenditure)
-        # print(c_month.id, ' c_month')
-    if Month.objects.all().count() < 1:
-        c_month = 0
-    else:
-        c_month = Month.objects.all().last().id
+            # print('total depense :', total_expenditure)
+            # print(c_month.id, ' c_month')
+        if Month.objects.all().count() < 1:
+            c_month = 0
+        else:
+            c_month = month # Month.objects.all().last().id
 
-    context = {
-        "page_title": "Opérations à la caisse",
-        "operations": operations,
-        "cashdesks": CashDesk.objects.all(),
-        "exercise": Exercise.objects.get(id=exercise),
-        "months": Month.objects.filter(year_id=exercise),
-        "current_month": c_month,
-        "month_name": Month.objects.get(id=c_month).name,
-        "reference": CashDeskReferenceGenerator.objects.last(),
-        "total_expenditure": total_expenditure,
-        "total_income": total_income,
-        "total_operation": total_operation,
-        "deferrer": deferrer,
-    }
-    if request.POST:
-        return render(request, "cashdesk/search_cashdesk_operation.html", context)
-    else:
-        return render(request, "cashdesk/cashdesk_operation_table.html", context)
+        context = {
+            "page_title": "Opérations à la caisse",
+            "operations": operations,
+            "cashdesks": CashDesk.objects.all(),
+            "exercise": Exercise.objects.get(id=exercise),
+            "months": Month.objects.filter(year_id=exercise).order_by("number"),
+            "current_month": c_month,
+            "month_name": Month.objects.get(id=c_month).name,
+            "reference": CashDeskReferenceGenerator.objects.last(),
+            "total_expenditure": total_expenditure,
+            "total_income": total_income,
+            "total_operation": total_operation,
+            "deferrer": deferrer,
+        }
+        if request.POST:
+            return render(request, "cashdesk/search_cashdesk_operation.html", context)
+        else:
+            return render(request, "cashdesk/cashdesk_operation_table.html", context)
 
 
 # @login_required(redirect_field_name="cashdesk-operation-detail")

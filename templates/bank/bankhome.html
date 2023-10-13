@@ -4,60 +4,56 @@
 <div class="w-full">
 	<div class="flex justify-center py-4">
 		<h1 class="font-medium bg-white text-indigo-800 text-center w-[50vw] align-middle
-text-2xl font-bold p-2 rounded-lg">Journal de Banque</h1>
+text-2xl p-2 rounded-lg">Journal de Banque</h1>
 	</div>
 	<div class="flex">
 		<div class="md:w-[40%] me-4 shadow-lg bg-white rounded-lg p-2">
-			<div class="hidden">
-				<button class="bg-indigo-800 text-white font-medium rounded-lg py-2 px-3">Ajouter un Exercice</button>
-				<div>
-					<p>
-						Vous avez <span class="text-indigo-800 font-bold">2 Exercices</span>
-					</p>
-				</div>
-			</div>
-			<div class="hidden">
-				<p>Vous avez au total:</p>
-				<h4>15 operations</h4>
-			</div>
 			<div>
 				{% for exercise in exercises %}
-		<div class="m-auto w-fit">
-			<button hx-get="{% url 'bank-operation-views' %}?exercise={{exercise.id}}&current_month={{f_month.id}}"
-					hx-target="body" hx-swap="innerHTML"
-					class="bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg">Opérations de l'exercice {{exercise.year}}</button>
-		</div>
-		{% empty %}
+				<div class="m-auto w-fit">
+					<button
+						hx-get="{% url 'bank-operation-views' %}?exercise={{exercise.id}}&current_month={{f_month.id}}"
+						hx-target="body" hx-swap="innerHTML" hx-indicator="#indicator"
+						class="bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg align-middle">
+						<span class="xl:block hidden">Opérations de l'exercice</span>
+						<span class="xl:hidden inline-block"><svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+							<path fill="currentColor" d="M6 1a1 1 0 0 0-2 0h2ZM4 4a1 1 0 0 0 2 0H4Zm7-3a1 1 0 1 0-2 0h2ZM9 4a1 1 0 1 0 2 0H9Zm7-3a1 1 0 1 0-2 0h2Zm-2 3a1 1 0 1 0 2 0h-2ZM1 6a1 1 0 0 0 0 2V6Zm18 2a1 1 0 1 0 0-2v2ZM5 11v-1H4v1h1Zm0 .01H4v1h1v-1Zm.01 0v1h1v-1h-1Zm0-.01h1v-1h-1v1ZM10 11v-1H9v1h1Zm0 .01H9v1h1v-1Zm.01 0v1h1v-1h-1Zm0-.01h1v-1h-1v1ZM10 15v-1H9v1h1Zm0 .01H9v1h1v-1Zm.01 0v1h1v-1h-1Zm0-.01h1v-1h-1v1ZM15 15v-1h-1v1h1Zm0 .01h-1v1h1v-1Zm.01 0v1h1v-1h-1Zm0-.01h1v-1h-1v1ZM15 11v-1h-1v1h1Zm0 .01h-1v1h1v-1Zm.01 0v1h1v-1h-1Zm0-.01h1v-1h-1v1ZM5 15v-1H4v1h1Zm0 .01H4v1h1v-1Zm.01 0v1h1v-1h-1Zm0-.01h1v-1h-1v1ZM2 4h16V2H2v2Zm16 0h2a2 2 0 0 0-2-2v2Zm0 0v14h2V4h-2Zm0 14v2a2 2 0 0 0 2-2h-2Zm0 0H2v2h16v-2ZM2 18H0a2 2 0 0 0 2 2v-2Zm0 0V4H0v14h2ZM2 4V2a2 2 0 0 0-2 2h2Zm2-3v3h2V1H4Zm5 0v3h2V1H9Zm5 0v3h2V1h-2ZM1 8h18V6H1v2Zm3 3v.01h2V11H4Zm1 1.01h.01v-2H5v2Zm1.01-1V11h-2v.01h2Zm-1-1.01H5v2h.01v-2ZM9 11v.01h2V11H9Zm1 1.01h.01v-2H10v2Zm1.01-1V11h-2v.01h2Zm-1-1.01H10v2h.01v-2ZM9 15v.01h2V15H9Zm1 1.01h.01v-2H10v2Zm1.01-1V15h-2v.01h2Zm-1-1.01H10v2h.01v-2ZM14 15v.01h2V15h-2Zm1 1.01h.01v-2H15v2Zm1.01-1V15h-2v.01h2Zm-1-1.01H15v2h.01v-2ZM14 11v.01h2V11h-2Zm1 1.01h.01v-2H15v2Zm1.01-1V11h-2v.01h2Zm-1-1.01H15v2h.01v-2ZM4 15v.01h2V15H4Zm1 1.01h.01v-2H5v2Zm1.01-1V15h-2v.01h2Zm-1-1.01H5v2h.01v-2Z"/>
+						  </svg></span>
+						<span class="inline-block">{{exercise.year}}</span></button>
+				</div>
+				{% empty %}
 
-		<div class="col-span-2 lg:col-span-6 md:col-span-3">
-			<p>Aucun exercice n'a été crée pour l'instant !</p>
-		</div>
-		{% endfor %}
+				<div class="col-span-2 lg:col-span-6 md:col-span-3">
+					<p>Aucun exercice n'a été crée pour l'instant !</p>
+				</div>
+				{% endfor %}
 			</div>
 		</div>
 
 
-	<div class="shadow-lg bg-white w-full rounded-lg">
+		<div class="shadow-lg bg-white w-full rounded-lg">
 
-		<div class="hidden">
-				<canvas id="expenditure_chart" ></canvas>
+			<div class="hidden">
+				<canvas id="expenditure_chart"></canvas>
 			</div>
 			<div class="hidden">
-				<canvas id="income_chart" ></canvas>
+				<canvas id="income_chart"></canvas>
 			</div>
 			<div class="p-2">
 				<div class="flex flex-col items-center justify-center">
 					<p class="text-gray-600 font-bold underline mb-4">Legende : </p>
 					<p>
-						<span class="inline-block mx-2 py-1 px-3 rounded-xl bg-red-700 font-bold text-white border-2 border-red-500">Dépense</span>
-						<span class="inline-block mx-2 py-1 px-3 rounded-xl bg-green-700 font-bold text-white border-2 border-green-500">Récette</span>
+						<span
+							class="inline-block mx-2 py-1 px-3 rounded-xl bg-red-700 font-bold text-white border-2 border-red-500">Dépense</span>
+						<span
+							class="inline-block mx-2 py-1 px-3 rounded-xl bg-green-700 font-bold text-white border-2 border-green-500">Récette</span>
 					</p>
 				</div>
 				<canvas id="year_chart" class=""></canvas>
 			</div>
-			</div>
-	<script type="text/javascript">
-				charts();
+		</div>
+		<script type="text/javascript">
+			charts();
 			/*document.addEventListener('htmx:afterSwap', function(event) {
 
 			if (event.detail.target.querySelector('#year_chart')) {
@@ -65,31 +61,31 @@ text-2xl font-bold p-2 rounded-lg">Journal de Banque</h1>
 			}
 			});*/
 
-			function charts(){
+			function charts() {
 				new Chart("year_chart", {
-			  type: "line",
-			  data: {
-			    labels: ['Mois1', 'Mois2', 'Mois3', 'Mois4', 'Mois5', 'Mois6', 'Mois7', 'Mois8', 'Mois9', 'Mois10'],
-			    datasets: [{
-			      data: [300,1700,1000,3000,2000,4000,8000,5000,6200,1700],
-			      borderColor: "red",
-			      fill: false
-			    },{
-			      data: [300,500,2000,3000,8000,2000,1000,5000,3200,5100],
-			      borderColor: "green",
-			      fill: false
+					type: "line",
+					data: {
+						labels: {{ months_data| safe}},
+			datasets: [{
+				data: {{ expenditures_data| safe}},
+				borderColor: "red",
+				fill: false
+			    }, {
+				data: {{ incomes_data| safe}},
+				borderColor: "green",
+				fill: false
 			    }]
 			  },
-			  options: {
-			    legend: {
-			    	display: true,
-			    	labels: ['Dépense', 'Recette', 'Données statiques']
-			    }
-			  }
+			options: {
+				legend: {
+					display: true,
+						labels: ['Dépense', 'Recette', 'Données statiques']
+				}
+			}
 			});
 			};
 
 		</script>
-		</div>
+	</div>
 </div>
 {% endblock content %}

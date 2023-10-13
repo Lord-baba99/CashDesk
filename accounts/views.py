@@ -16,6 +16,7 @@ def logout_user(request):
 
 
 def login_user(request):
+    # print("Impression de la requete: ", request.POST)
     global url
     if request.method == 'GET':
         url = request.GET.get('next')
@@ -23,9 +24,10 @@ def login_user(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username, password)
+        # print(username, password)
         user = authenticate(username=username, password=password)
-        print(user)
+        
+        # print(user)
         if user:
             login(request, user)
             if url:

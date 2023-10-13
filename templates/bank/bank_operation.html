@@ -4,6 +4,423 @@
   <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
     <ul class="flex -mb-px pb-2">
       {% for month in months %}
+      {% if month.is_active %}
+        <li class="mr-2 bg-indigo-700 rounded-lg h-fit block">
+          <a hx-get="{% url 'bank-operation-views' %}?current_month={{month.id}}&exercise={{exercise.id}}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" class="px-4 py-3 text-lg text-white font-medium border-b-2 border-transparent rounded-t-lg hover:text-white hover:border-indigo-300 dark:hover:text-indigo-300" aria-current="page">{{ month.name|capfirst }}</a>
+        </li>
+      {% endif %}
+        {% empty %}
+      </ul>
+      <div class="flex h-full justify-center">
+        <p class="bg-indigo-800 text-white text-center h-20 align-middle w-full">Veuillez Ajouter un mois pour commencer !</p>
+        <button data-modal-target="month-modal" data-modal-toggle="month-modal" class="font-medium bg-indigo-400 text-white py-2 px-3 rounded-lg align-middle">Ajouter un mois
+        <svg class="w-4 h-4 text-white dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v3m5-3v3m5-3v3M1 7h7m1.506 3.429 2.065 2.065M19 7h-2M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm6 13H6v-2l5.227-5.292a1.46 1.46 0 0 1 2.065 2.065L8 16Z"/>
+  </svg></button>
+      </div>
+      <div id="month-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full md:w-[50rem] p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+          <div class="relative w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+              <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="month-modal">
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+              <span class="sr-only">fermer le modal</span>
+              </button>
+              <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Ajouter un mois</h3>
+                <form class="space-y-6" id="month_form" action="{% url 'create-month' %}" method="post">
+                  {% csrf_token %}
+                  <input type="checkbox" name="from_bank" checked class="hidden">
+                  <div>
+                    <label for="name_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom du mois</label>
+                    <select name="number" id="month_number_id"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      required>
+                      <option selected>
+                        Choisir un mois
+                      </option>
+                      {% for month in months %}
+                      <option value="{{ month.number }}">
+                        {{ month.name }}
+                      </option>
+                      {% endfor %}
+                      
+                    </select>
+                  </div>
+                  <div class="hidden">
+                    <label for="start_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Debut</label>
+                    <input type="number" value="0" name="start" id="start_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Premier jour du mois Ex: 01">
+                  </div>
+                  <div class="hidden">
+                    <label for="end_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fin</label>
+                    <input type="number" value="0" name="end" id="end_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Dernier jour du mois Ex: 31">
+                  </div>
+                  <div class="hidden">
+                    <label for="year_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Exercice encours</label>
+                    <input type="number" name="year" id="year_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white hidden" value="{{exercise.id}}" required>
+                  </div>
+
+                  <div id="month_responce_message_container">
+                  <button id="form_submit" type="submit" hx-post="{% url 'create-month' %}" hx-indicator="#indicator" hx-target="#month_responce_message_container" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+  </div>
+  {% if months.count > 0 %}
+    <!-- Table -->
+    <div class="shadow-md sm:rounded-lg mt-4">
+      <div class="flex justify-between items-center px-6 py-3">
+        <button class="font-medium bg-indigo-400 text-white py-2 px-3 rounded-lg align-middle" hx-indicator="#indicator" hx-get="{% url 'bank-home' %}" hx-target="body" hx-swap="innerHTML">Menu banque
+          <svg class="w-4 h-4 text-white dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8v10a1 1 0 0 0 1 1h4v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5h4a1 1 0 0 0 1-1V8M1 10l9-9 9 9"/>
+  </svg>
+        </button>
+        <div>
+          <p class="font-bold text-lg">Mois de {{month_name|upper}}</p>
+        </div>
+        <button data-modal-target="month-modal" data-modal-toggle="month-modal" class="font-medium bg-indigo-400 text-white py-2 px-3 rounded-lg align-middle">Ajouter un mois
+        <svg class="w-4 h-4 text-white dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v3m5-3v3m5-3v3M1 7h7m1.506 3.429 2.065 2.065M19 7h-2M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm6 13H6v-2l5.227-5.292a1.46 1.46 0 0 1 2.065 2.065L8 16Z"/>
+  </svg></button>
+        <div id="month-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full md:w-[50rem] p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+          <div class="relative w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+              <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="month-modal">
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+              <span class="sr-only">fermer le modal</span>
+              </button>
+              <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Ajouter un mois</h3>
+                <form class="space-y-6" id="month_form" action="{% url 'create-month' %}" method="post">
+                  {% csrf_token %}
+                  <input type="checkbox" name="from_bank" checked class="hidden">
+                  <div>
+                    <label for="name_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom du mois</label>
+                    <select name="number" id="month_number_id"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      required>
+                      <option selected>
+                        Choisir un mois
+                      </option>
+                      {% for month in months %}
+                      <option value="{{ month.number }}">
+                        {{ month.name }}
+                      </option>
+                      {% endfor %}
+                      
+                    </select>
+                  </div>
+                  <div class="hidden">
+                    <label for="start_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Debut</label>
+                    <input type="number" value="0" name="start" id="start_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Premier jour du mois Ex: 01">
+                  </div>
+                  <div class="hidden">
+                    <label for="end_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fin</label>
+                    <input type="number" value="0" name="end" id="end_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Dernier jour du mois Ex: 31">
+                  </div>
+                  <div class="hidden">
+                    <label for="year_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Exercice encours</label>
+                    <input type="number" name="year" id="year_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white hidden" value="{{exercise.id}}" required>
+                  </div>
+
+                  <div id="month_responce_message_container">
+                  <button id="form_submit" type="submit" hx-post="{% url 'create-month' %}" hx-indicator="#indicator" hx-target="#month_responce_message_container" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-between pb-4">
+        <div class="flex">
+          <form>
+            {% csrf_token %}
+            <label for="table-search" class="sr-only">Recherche</label>
+            
+            <div class="relative me-4">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+            </div>
+            <input class="hidden" type="text" name="current_month" value="{{current_month}}">
+            <input class="hidden" type="text" name="exercise" value="{{exercise.id}}">
+            <input type="text" id="table-search" class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="Rechercher une operation" name='search' hx-post="{% url 'bank-operation-views'%}"
+            hx-trigger="keyup changed delay:500ms, search"
+            hx-target="#search-result"
+            hx-indicator=".htmx-indicator" hx-swap="innerHTML">
+          </div>
+        </form>
+        <div class="hidden">
+          <button id="dropdownRadioButton" data-dropdown-toggle="dropdownRadio" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+          <svg class="w-3 h-3 text-gray-300 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6v13m0 0 3-3m-3 3-3-3m11-2V1m0 0L9 4m3-3 3 3"/>
+          </svg>
+          Trier
+          <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+          </button>
+          <!-- Dropdown menu -->
+          <div id="dropdownRadio" class="z-50 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
+            <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioButton">
+              <li>
+                <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                  <input id="filter-radio-example-1" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                  <label for="filter-radio-example-1" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Libellé <span class="inline-block"><svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"/>
+                  </svg></span>
+                </label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                <input id="filter-radio-example-1" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="filter-radio-example-1" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Libellé <span class="inline-block"><svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v12m0 0 4-4m-4 4L1 9"/>
+                </svg></span></label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                <input checked="" id="filter-radio-example-2" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="filter-radio-example-2" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Réference <span class="inline-block"><svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"/>
+                </svg></span></label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                <input checked="" id="filter-radio-example-2" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="filter-radio-example-2" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Réference <span class="inline-block"><svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v12m0 0 4-4m-4 4L1 9"/>
+                </svg></span></label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                <input id="filter-radio-example-3" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="filter-radio-example-3" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Date <span class="inline-block"><svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"/>
+                </svg></span></label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                <input id="filter-radio-example-3" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="filter-radio-example-3" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Date <span class="inline-block"><svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v12m0 0 4-4m-4 4L1 9"/>
+                </svg></span></label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                <input id="filter-radio-example-4" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="filter-radio-example-4" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Montant <span class="inline-block"><svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"/>
+                </svg></span></label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                <input id="filter-radio-example-4" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="filter-radio-example-4" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Montant <span class="inline-block"><svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v12m0 0 4-4m-4 4L1 9"/>
+                </svg></span></label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                <input id="filter-radio-example-5" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="filter-radio-example-5" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Transaction <span class="inline-block"><svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"/>
+                </svg></span></label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                <input id="filter-radio-example-5" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="filter-radio-example-5" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Transaction <span class="inline-block"><svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v12m0 0 4-4m-4 4L1 9"/>
+                </svg></span></label>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white border-solid border-2 border-red-500 rounded-lg  flex">
+      <p class="bg-red-500 text-white px-3 py-1 font-bold">Total depense: </p>
+      <p class="text-gray-700 px-3 py-1 font-bold">{{total_expenditure}}</p>
+    </div>
+    <div class="bg-white border-solid border-2 border-green-500 rounded-lg  flex">
+      <p class="bg-green-500 text-white px-3 py-1 font-bold">Total recette: </p>
+      <p class="text-gray-700 px-3 py-1 font-bold">{{total_income}}</p>
+    </div>
+    <div class="flex jutify-around">
+      
+      <!-- Modal toggle -->
+      <button type="button" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 flex items-center" id="createbankOperationModalButton" data-modal-toggle="createbankOperationModal">
+      <svg class="mx-1 w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+      </svg>
+      <span class="inline-block">Ajouter une operation</span>
+      </button>
+      <!-- bank operation modal -->
+      <div id="createbankOperationModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[100] justify-center items-center w-full md:inset-0 h-modal md:h-screen">
+        <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+          <!-- Modal content -->
+          <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <!-- Modal header -->
+            <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Ajouter une nouvelle operation de banque
+              <button hx-get="{% url 'add-bank-operation' %}" hx-swap="innerHTML" hx-indicator="#indicator" hx-target="body">
+              <svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11v4.833A1.166 1.166 0 0 1 13.833 17H2.167A1.167 1.167 0 0 1 1 15.833V4.167A1.166 1.166 0 0 1 2.167 3h4.618m4.447-2H17v5.768M9.111 8.889l7.778-7.778"/>
+              </svg>
+              </button>
+              </h3>
+              <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="createbankOperationModal">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            <span class="sr-only">Fermer le modal</span>
+            </button>
+          </div>
+          <!-- Modal body -->
+          <form action="#" id="createbankOperationModalForm">
+            {% csrf_token %}
+            <div class="grid gap-4 mb-4 sm:grid-cols-2">
+              <div>
+                <label for="user_name_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Caissière</label>
+                <input type="text" name="user_name" id="user_name_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500 " value="{{user.username}} {{user.lastname}}" required="" disabled />
+                <input type="text" name="user" hidden value="{{user.id}}">
+              </div>
+              <div>
+                <label for="reference_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Référence</label>
+                <input type="text" name="reference" id="reference_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="" required="" value="{{reference}}">
+              </div>
+              
+              <!-- Transaction tabs -->
+              <div class="md:col-span-2">
+                <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+                  <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#transactionTab" role="tablist">
+                    <li class="mr-2" role="presentation">
+                      <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-indigo-800 " id="expend-tab" data-tabs-target="#expend" type="button" role="tab" aria-controls="expend" aria-selected="false" onclick="toggleTransaction('expenditure')">Dépense</button>
+                    </li>
+                    <li class="mr-2" role="presentation">
+                      <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-indigo-800 hover:border-gray-300 dark:hover:text-gray-300" id="income-tab" data-tabs-target="#income" type="button" role="tab" aria-controls="income" aria-selected="false" onclick="toggleTransaction('income')">Récette</button>
+                    </li>
+                    <li class="">
+                      <input class="hidden transaction transaction" type="checkbox" checked name="expenditure" id="expenditure_id">
+                      <input class="hidden transaction" type="checkbox" name="income" id="income_id">
+                      <input class="hidden"  type="text" name="exercise" value="{{exercise.id}}">
+                      <input class="hidden"  type="text" name="month" value="{{current_month}}">
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <label for="expend_amount_letter_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Montant en lettre</label>
+                  <input type="text" name="amount_letter" id="expend_amount_letter_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="">
+                </div>
+                
+                <div id="transactionTab">
+                  <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="expend" role="tabpanel" aria-labelledby="expend-tab">
+                    <div>
+                      <div>
+                        <label for="expenditure_amount_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Montant en chiffre</label>
+                        <input type="number" name="expenditure_amount" id="expenditure_amount_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="" value="0">
+                      </div>
+                      <div>
+                        <label for="withdrawer_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rétirant</label>
+                        <input type="text" name="withdrawer" id="withdrawer_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="income" role="tabpanel" aria-labelledby="income-tab">
+                    <div>
+                      <div>
+                        <label for="income_amount_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Montant en chiffre</label>
+                        <input type="number" name="income_amount" id="income_amount_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="" value="0">
+                      </div>
+                      <div>
+                        <label for="depositor_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Déposant</label>
+                        <input type="text" name="depositor" id="depositor_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label for="date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+                <input type="date" name="done_date" id="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="$2999" required="">
+              </div>
+              <div>
+                <label for="bank_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Banque</label>
+                <select id="bank_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" name="bank" required="">
+                  <option selected="">Selectionner un compte bancaire</option>
+                  {% for bank in banks %}
+                    <option value="{{bank.id}}">{{bank.name}} [{{bank.reference}}]</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="sm:col-span-2">
+                <label for="wording" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Libellé</label>
+                <textarea id="wording" name='wording' rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500" placeholder="Veillez décrire l'opération ici !" required=""></textarea>
+              </div>
+            </div>
+            <button type="button" hx-post="{% url 'add-bank-operation' %}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" class="text-white inline-flex items-center bg-indigo-800 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
+          <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+          Enregistrer
+          </button>
+          <input type="checkbox" name="modal" checked class="hidden">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="relatives">
+<div class="overflow-x-auto" id="search-result">
+  {% block table %}
+
+  {% endblock table %}
+</div>
+  <div class="flex p-2 justify-center">
+    <div class="bg-white rounded-lg grid grid-cols-2 w-[50%]">
+      <div class="font-bold text-gray-800 text-center align-middle p-2">
+        Total depense : <span class="text-red-500">{{total_expenditure}}</span>
+      </div>
+      <div class="font-bold text-gray-800 text-center align-middle p-2">
+        Total recette : <span class="text-green-500">{{total_income}}</span>
+      </div>
+      <div class="font-bold text-gray-800 text-center align-middle p-2 ">
+        Report du mois précedent : <span class="text-gray-800">{{deferrer}}</span>
+      </div>
+      <div class="font-bold text-gray-800 text-center align-middle p-2 ">
+        Solde du mois : <span class="text-indigo-800">{{total_operation}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- End of table -->
+{% endif %}
+{% endblock content %}
+{% comment "" %}
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+    <ul class="flex -mb-px pb-2">
+      {% for month in months %}
         <li class="mr-2 bg-indigo-700 rounded-lg h-fit block">
           <a hx-get="{% url 'bank-operation-views' %}?current_month={{month.id}}&exercise={{exercise.id}}" hx-target="body" hx-swap="innerHTML" class="px-4 py-3 text-lg text-white font-medium border-b-2 border-transparent rounded-t-lg hover:text-white hover:border-indigo-300 dark:hover:text-indigo-300" aria-current="page">{{ month.name|capfirst }}</a>
         </li>
@@ -43,8 +460,8 @@
                     <input type="number" name="end" id="end_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required placeholder="Dernier jour du mois Ex: 31">
                   </div>
                   <div>
-                    <label for="year_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Exercice encours</label>
-                    <input type="number" name="year" id="year_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white hidden" value="{{exercise.id}}" required>
+                    <label for="year_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Exercice encours</label>
+                    <input type="number" name="year" id="year_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white hidden" value="{{exercise.id}}" required>
                   </div>
                   <button type="submit" hx-post="{% url 'create-month' exercise=exercise.id %}" hx-target="body" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
                 </form>
@@ -97,8 +514,8 @@
                     <input type="number" name="end" id="end_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required placeholder="Dernier jour du mois Ex: 31">
                   </div>
                   <div>
-                    <label for="year_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Exercice encours</label>
-                    <input type="number" name="year" id="year_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white hidden" value="{{exercise.id}}" required>
+                    <label for="year_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Exercice encours</label>
+                    <input type="number" name="year" id="year_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white hidden" value="{{exercise.id}}" required>
                   </div>
                   <button type="submit" hx-post="{% url 'create-month' exercise=exercise.id %}" hx-target="body" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
                 </form>
@@ -380,3 +797,4 @@
 <!-- End of table -->
 {% endif %}
 {% endblock content %}
+{% endcomment %}

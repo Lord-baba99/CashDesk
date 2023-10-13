@@ -9,12 +9,14 @@ from urllib.parse import urlencode
 from django.urls import reverse
 from .forms import BankOperationForm
 from .models import *
+from enterprise.features import operations_chart_data
+
 
 # @login_required(redirect_field_name="bank-home")
 def bank_home(request):
     update()
     # getting the last month as default for operation views
-    month = Month.objects.last()
+    month = Month.objects.filter(is_active=True).last()
     if month:
         f_month = month
     else:
@@ -23,12 +25,17 @@ def bank_home(request):
     # getting all exercise
     exercises = Exercise.objects.all()
 
+    chart_data = operations_chart_data(Exercise, Month, BankOperation)
     context = {
         'page_title': 'Banque',
         'exercises': exercises,
         'banks': BankAccount.objects.all(),
         'f_month': f_month,
+        "expenditures_data": chart_data['exp'],
+        "incomes_data":chart_data['inc'],
+        "months_data": chart_data['mon'],
     }
+    print(context["months_data"])
     return render(request, 'bank/bankhome.html', context)
 
 def search_bank_operation(request, month=None, exercise=None):
@@ -51,13 +58,15 @@ def bank_operation_views(request, **kwargs):
     """
     update()
     # getting the current month to show up the operations view
+    month = request.GET.get("current_month")
+    exercise = request.GET.get("exercise")
     
     if request.POST:
         month = request.POST.get('current_month')
         exercise = request.POST.get('exercise')
         target = request.POST.get('search')
         
-        operations = BankOperation.objects.filter(wording__contains=target, month__year=exercise, month_id=month)
+        operations = BankOperation.objects.filter(wording__contains=target, month__year=exercise, month_id=month).order_by("done_date")
         context = {
         'operations': operations, 
         'current_month': Month.objects.get(pk=month).id,
@@ -66,14 +75,17 @@ def bank_operation_views(request, **kwargs):
         return render(request, 'bank/search_bank_operation.html', context)
 
     else:
-        month = request.GET.get('current_month')
-        exercise = request.GET.get('exercise')
+        operations = BankOperation.objects.filter(
+            month_id=month, month__year=exercise
+        ).order_by("done_date")
         # print('mois ', month)
         if month:
             c_month = Month.objects.get(id=month)
-            operations = BankOperation.objects.filter(month_id=c_month.id, month__year=exercise)
+            
             try:
-                total_expenditure = BankTotalExpenditure.objects.get(month=month).month_amount
+                total_expenditure = BankTotalExpenditure.objects.get(
+                    month=month
+                ).month_amount
             except BankTotalExpenditure.DoesNotExist:
                 total_expenditure = 0
 
@@ -81,10 +93,12 @@ def bank_operation_views(request, **kwargs):
                 total_income = BankTotalIncome.objects.get(month=month).month_amount
             except BankTotalIncome.DoesNotExist:
                 total_income = 0
+                
             try:
                 total_operation = BankTotalOperation.objects.get(month=month).month_amount
             except BankTotalOperation.DoesNotExist:
                 total_operation = 0
+                
             try:
                 deferrer = BankDeferrerOperation.objects.get(month=month).initial
             except BankDeferrerOperation.DoesNotExist:
@@ -93,33 +107,37 @@ def bank_operation_views(request, **kwargs):
             # print('total depense :', total_expenditure)
             # print(c_month.id,' c_month')
 
-            context = {
+        else:
+            total_expenditure = 0
+            total_income = 0
+            total_operation = 0
+            deferrer = 0
+            
+        if Month.objects.all().count()<1:
+            c_month = 0
+        else:
+           c_month = month #Month.objects.all().last()
+           
+        context = {
             'page_title': 'Opérations bancaires',
             'operations': operations,
             'banks': BankAccount.objects.all(),
             'exercise': Exercise.objects.get(id=exercise),
-            'months': Month.objects.filter(year_id=exercise),
-            'current_month': c_month.id,
-            'month_name': c_month.name,
+            'months': Month.objects.filter(year_id=exercise).order_by("number"),
+            'current_month': c_month,
+            'month_name': Month.objects.get(id=c_month).name,
             'reference': BankReferenceGenerator.objects.last(),
             'total_expenditure': total_expenditure,
             'total_income': total_income,
             'total_operation': total_operation,
             'deferrer': deferrer,
-            }
-            return render(request, 'bank/bank_operation_table.html', context)
-
-        if Month.objects.all().count()<1:
-            current_month = 0
-        else:
-            current_month = Month.objects.all().last()
-        
-        context = {
-        'page_title': 'Opérations bancaires',
-        'exercise': Exercise.objects.get(id=exercise),
-        'current_month': current_month,
         }
-        return render(request, 'bank/bank_operation_table.html', context)
+        
+        if request.POST:
+            return render(request, 'bank/search_bank_operation.html', context)
+        else:
+            return render(request, 'bank/bank_operation_table.html', context)
+            
 
 # @login_required(redirect_field_name="bank-operation-detail")
 def bank_operation_detail(request, pk):
@@ -141,7 +159,7 @@ def add_bank_operation(request, month=None, year=None):
         # print(request.POST)
         # print(form)
         if form.is_valid():
-            # print('form valid')
+            print('form valid')
             form.save()
             reference = BankReferenceGenerator.objects.create(
                 initial='2MC',
@@ -163,7 +181,7 @@ def add_bank_operation(request, month=None, year=None):
                 return HttpResponseRedirect(redirect_url)
             
         else:
-            # print('form invalid')
+            print('form invalid')
             operations = BankOperation.objects.all()
             context = {
                 'Error': 'Formulaire invalide !',

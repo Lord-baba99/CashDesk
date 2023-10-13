@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import *
 from .models import *
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from urllib.parse import urlencode
 from django.urls import reverse
 from bankapp.models import *
@@ -12,12 +12,12 @@ def update():
     bank_total_incomes = BankTotalIncome.objects.all()
     bank_total_expenditures = BankTotalExpenditure.objects.all()
     bank_total_operations = BankTotalOperation.objects.all()
-    for bank_total_income in bank_total_incomes:
-        bank_total_income.sum()
-    for bank_total_expenditure in bank_total_expenditures:
-        bank_total_expenditure.sum()
-    for bank_total_operation in bank_total_operations:
-        bank_total_operation.calc()
+    for bank_income in bank_total_incomes:
+        bank_income.sum()
+    for bank_expenditure in bank_total_expenditures:
+        bank_expenditure.sum()
+    for bank_operation in bank_total_operations:
+        bank_operation.calc()
 
     if BankReferenceGenerator.objects.all().count() == 0:
         reference = BankReferenceGenerator.objects.create(
@@ -46,7 +46,10 @@ def update():
         reference.save()
 
 
-def init_statistics(month_instance):
+def init_bank_statistics(month_instance):
+    BankDeferrerOperation.objects.create(
+        month=month_instance
+    ).save()
     BankTotalExpenditure.objects.create(
         month=month_instance
     ).save()
@@ -56,7 +59,10 @@ def init_statistics(month_instance):
     BankTotalOperation.objects.create(
         month=month_instance
     ).save()
-    BankDeferrerOperation.objects.create(
+    
+    
+def init_cashdesk_statistics(month_instance):
+    CashDeskDeferrerOperation.objects.create(
         month=month_instance
     ).save()
     CashDeskTotalExpenditure.objects.create(
@@ -68,9 +74,7 @@ def init_statistics(month_instance):
     CashDeskTotalOperation.objects.create(
         month=month_instance
     ).save()
-    CashDeskDeferrerOperation.objects.create(
-        month=month_instance
-    ).save()
+
 
 
 def initialise(request):
@@ -87,37 +91,86 @@ def settings_view(request):
     return render(request, 'enterprise/settings.html', context)
 
 
-def create_month(request, month=None, exercise=None):
-	if request.POST:
-		months = Month.objects.filter(year_id=exercise)
-		# print(months)
-		form = MonthForm(request.POST)
-		if form.is_valid():
-			all_ready_exist = False
-			for x in months:
-				if request.POST.get('name').lower() in x.name.lower():
-					all_ready_exist = True
-			if not all_ready_exist:
-				month_instance = form.save()
-				init_statistics(month_instance)
-		else:
-			# print("form is invalid")
-			pass
-
-	context = {
-		'current_month': month_instance.id,
-		'exercise': exercise,
-	}
-
+def create_month(request):
+    if request.POST:
+        exercise = request.POST.get('year')
+        months = Month.objects.filter(year_id=exercise)
+        form = MonthForm(request.POST)
+        print(request.POST)
+        if form.is_valid():
+            
+            month_number = int(request.POST.get('number'))
+            # print(month_number)
+            month = Month.objects.get(number=month_number)
+            
+            if not month.is_active:
+                Month.objects.filter(number=month_number).update(is_active=True)
+                # month.save()
+                init_cashdesk_statistics(month)
+                init_bank_statistics(month)
+                success_message = f"Le mois de {month.name} a été ajouté avec succès !"
+                base_url = reverse("cashdesk-operation-views")
+                params = {
+                    "current_month": month.id,
+                    "exercise": month.year.id
+                }
+                url = base_url + '?' + '&'.join([f'{key}={value}' for key, value in params.items()])
+                return HttpResponse(f"""
+                                    <div class="">
+                                        <p class="text-green-500 font-medium rounded-lg">{success_message}</p>
+                                        <button hx-get="{url}" hx-indicator="#indicator" hx-target="body" hx-swap="innerHTML" class="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                        Aller vers  
+                                        </button>
+                                    </div>
+                                    """) #JsonResponse({'success_message': success_message})
+            else:
+                error_message = f"Le mois de {month.name} existe déjà !"  # Message d'erreur personnalisé
+                url = reverse("create-month")
+                return HttpResponse(f"""
+                                    <div class="">
+                                        <p class="text-red-500 font-medium rounded-lg">{error_message}</p>
+                                        <button id="form_submit" type="submit" hx-post="{url}" hx-indicator="#indicator" hx-target="#month_responce_message_container" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+                                    </div>
+                                    """) #JsonResponse({'error_message': error_message})
+            
+        """if not all_ready_exist:
+            month_instance = form.save()
+            init_statistics(month_instance)
+        return HttpResponse(f"Le mois de {month_instance['name']} a été ajouté avec succès !")
+        
+        else:
+            return HttpResponse("Les données saisies sont incorrecte, réessayer !")"""
+        """context = {
+        'current_month': month_instance.id,
+        'exercise': exercise,
+        }"""
+        error_message = "Les données saisies sont incorrectes, réessayez !"
+        url = reverse("create-month")
+        return HttpResponse(f"""
+                                    <div class="">
+                                        <p class="text-red-500 font-medium rounded-lg">{error_message}</p>
+                                        <button id="form_submit" type="submit" hx-post="{url}" hx-indicator="#indicator" hx-target="#month_responce_message_container" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+                                    </div>
+                                    """)
+    else:
+        error_message = "Bad request, request should be post not get, refresh the page and try again. <br>If the proble persite, contact the administrator"
+        url = reverse("create-month")
+        return HttpResponse(f"""
+                                    <div class="">
+                                        <p class="text-red-500 font-medium rounded-lg">{error_message}</p>
+                                        <button id="form_submit" type="submit" hx-post="{url}" hx-indicator="#indicator" hx-target="#month_responce_message_container" hx-swap="innerHTML" class="w-full text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Enregistrer</button>
+                                    </div>
+                                    """)
 	# print(context)
-	if request.POST.get('from_cashdesk'):
-		url = 'cashdesk-operation-views'
-	elif request.POST.get('from_bank'):
-		url = 'bank-operation-views'
+    # This block is commented because the initial config process has change.  
+    """if request.POST.get('from_cashdesk'):
+        url = 'cashdesk-operation-views'
+    elif request.POST.get('from_bank'):
+        url = 'bank-operation-views'
 
-	query_string = urlencode(context)
-	redirect_url = reverse(url) + '?' + query_string
-	return HttpResponseRedirect(redirect_url)
+    query_string = urlencode(context)
+    redirect_url = reverse(url) + '?' + query_string
+    return HttpResponseRedirect(redirect_url)"""
 
 
 def create_exercise(request):
@@ -144,7 +197,8 @@ def create_exercise(request):
 					if form.is_valid():
 						# print("form valid ")
 						month_instance = form.save()
-						init_statistics(month_instance)
+						init_cashdesk_statistics(month_instance)
+						init_bank_statistics(month_instance)
 						name = request.POST['year']
 						context = {
 							'success': True,

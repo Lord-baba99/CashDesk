@@ -124,7 +124,7 @@ class CashDeskDeferrerOperation(models.Model):
 
     def initialise(self):
         try:
-            month_before = Month.objects.filter(id__lt=self.month.id).last()
+            month_before = Month.objects.filter(id__lt=self.month.number).last()
         except Month.DoesNotExist:
             month_before = None
         # print(month_before)
@@ -175,4 +175,4 @@ class CashDeskTotalOperation(models.Model):
         self.save()
 
     def __str__(self):
-        return f'Total solde mois de {self.month}'
+        return f'Total solde du mois de {self.month}'

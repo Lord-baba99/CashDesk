@@ -40,31 +40,31 @@
                 <label for="checkbox-table-search-{{operation.id}}" class="sr-only">checkbox</label>
               </div>
             </td>
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+            <th scope="row" class="pmin-w-[8rem] x-6 py-4 font-medium text-gray-900 dark:text-white">
               {{operation.wording}}
             </th>
-            <td class="px-6 py-4">
+            <td class="min-w-[8rem] px-6 py-4">
               {{operation.reference}}
             </td>
-            <td class="px-6 py-4">
+            <td class="min-w-[8rem] px-6 py-4">
               {{operation.done_date}}
             </td>
             {% if operation.income %}
-              <td class="px-6 py-4">
+              <td class="min-w-[8rem] px-6 py-4">
                 {{operation.income_amount}} F CFA
               </td>
-              <td class="px-6 py-4">
+              <td class="min-w-[8rem] px-6 py-4">
                 Recette
               </td>
               {% elif operation.expenditure %}
-              <td class="px-6 py-4">
+              <td class="min-w-[8rem] px-6 py-4">
                 {{operation.expenditure_amount}} F CFA
               </td>
-              <td class="px-6 py-4">
+              <td class="min-w-[8rem] px-6 py-4">
                 Depense
               </td>
             {% endif %}
-            <td class="px-6 py-4">
+            <td class="min-w-[8rem] px-6 py-4">
               <button data-tooltip-target="tooltip-edit" class="font-medium text-indigo-600 dark:text-indigo-500 hover:underline"
               hx-get="{% url 'get-cashdesk-operation' exercise=exercise.id month=current_month pk=operation.id %}"
               hx-target="#row-{{operation.id}}"

@@ -24,6 +24,8 @@ class Exercise(models.Model):
         return 'Exercice' + self.year
 
 class Month(models.Model):
+    is_active = models.BooleanField(default=False, blank=True)
+    number = models.IntegerField(default=0)
     name = models.CharField(max_length=20, null=True, blank=True)
     start = models.IntegerField(default=0)
     end = models.IntegerField(default=0)

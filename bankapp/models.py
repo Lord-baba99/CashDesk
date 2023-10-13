@@ -14,10 +14,15 @@ class BankAccount(models.Model):
     rib = models.CharField(max_length=255, null=True, blank=True)
     agence = models.CharField(max_length=255, null=True, blank=True)
     reference = models.CharField(max_length=255, null=True, blank=True)
+    bank_counter = models.CharField(max_length=255, null=True, blank=True, default="")
     location = models.CharField(max_length=255, null=True, blank=True)
 
+    
     def __str__(self):
-        return self.name + " << " + self.reference + " >>"
+        if self.reference:
+            return self.name + " << " + self.reference + " >>"
+        else:
+            return self.name
 
 
 class BankOperation(models.Model):
@@ -129,7 +134,7 @@ class BankDeferrerOperation(models.Model):
 
     def initialise(self):
         try:
-            month_before = Month.objects.filter(id__lt=self.month.id).last()
+            month_before = Month.objects.filter(id__lt=self.month.number).last()
         except Month.DoesNotExist:
             month_before = None
         # print(month_before)
@@ -179,4 +184,4 @@ class BankTotalOperation(models.Model):
         self.save()
 
     def __str__(self):
-        return f"Total solde mois de {self.month}"
+        return f"Total solde du mois de {self.month}"

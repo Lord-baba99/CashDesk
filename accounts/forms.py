@@ -7,11 +7,11 @@ class PersonForm(forms.ModelForm):
 		model = Person
 		fields = '__all__'
 	def clean_password(self):
-	    # Récupérer le mot de passe saisi par l'utilisateur
-	    password = self.cleaned_data.get('password')
-	    # Hacher le mot de passe
-	    hashed_password = make_password(password)
-	    return hashed_password
+		# Récupérer le mot de passe saisi par l'utilisateur
+		password = self.cleaned_data.get('password')
+		# Hacher le mot de passe
+		hashed_password = make_password(password)
+		return hashed_password
 
 class JoinedDate(forms.ModelForm):
 	class Meta:
