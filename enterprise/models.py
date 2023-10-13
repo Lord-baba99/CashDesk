@@ -2,7 +2,7 @@ from django.db import models
 
 class Enterprise(models.Model):
     name = models.CharField(max_length=255, blank=False, null=True)
-    logo = models.ImageField(upload_to="enterprise/img/logo/")
+    logo = models.ImageField(upload_to="enterprise/img/logo/", null=True, blank=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     slogan = models.CharField(max_length=255, blank=True, null=True)
     niu = models.CharField(max_length=255, blank=True, null=True)
