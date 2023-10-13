@@ -7,15 +7,16 @@ import cashdeskapp.urls
 import bankapp.urls
 import accounts.urls
 import enterprise.urls
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
     path('shutdown/', shutdown, name='shutdown'),
-    path('caisse/', include(cashdeskapp.urls)),
-    path('banque/', include(bankapp.urls)),
-    path('account/', include(accounts.urls)),
-    path('settings/', include(enterprise.urls)),
+    path('caisse/', include(login_required(cashdeskapp.urls))),
+    path('banque/', include(login_required(bankapp.urls))),
+    path('account/', include(login_required(accounts.urls))),
+    path('settings/', include(login_required(enterprise.urls))),
 ]
 
 if settings.DEBUG:
