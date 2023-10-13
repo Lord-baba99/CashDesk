@@ -1,4 +1,4 @@
-import settings
+import CashDesk.settings
 from cashdeskapp.models import *
 from bankapp.models import *
 from accounts.models import *
@@ -51,13 +51,14 @@ def create_month():
     created = []
     failed = []
     
+    y = Exercise.objects.all().first()
     for k, v in x.items():
-        m = Month.objects.create(number=v, name=k)
+        m = Month.objects.create(number=v, name=k, year=y)
         m.save()
         if m.id != None:
-            created.append[m.name]
+            created.append(m.name)
         else:
-            failed.append[m.name]
+            failed.append(m.name)
     
     if len(x) == len(created):
         status_code = 200
@@ -66,7 +67,7 @@ def create_month():
     else:
         status_code = 400
     
-    return {'id_list': created, 'status_code': status_code, 'message': code[status_code]}
+    return {'id_list': created, 'failed_list': failed, 'status_code': status_code, 'message': code[status_code]}
 
 def init_enterprise(name):
     ent = Enterprise.objects.create(name=name)
@@ -74,12 +75,12 @@ def init_enterprise(name):
     if ent.id != None:
         cd = CashDesk.objects.create(reference="caisse 001", enterprise=ent)
         cd.save()
-        bk = BankAccount.objects.create(name="Bank 1", Enterprise=ent)
+        bk = BankAccount.objects.create(name="Bank 1", enterprise=ent)
         bk.save()
 
         if bk.id and cd.id != None:
             status_code = 200
-        if bk.id or cd.id == None:
+        if (bk.id or cd.id) == None:
             status_code = 300
         elif bk.id and cd.id == None:
             status_code = 400

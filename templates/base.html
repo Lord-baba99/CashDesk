@@ -10,7 +10,9 @@
       <script src="{% static 'htmx/htmx.min.js' %}"></script>
       <script src="{% static 'jQuery/jQuery.js' %}"></script>
       <script src="{% static 'chart.js/chart.js.min.js' %}"></script>
+      {% if enterprise.logo %}
       <link rel="icon" href="{{enterprise.logo.url}}">
+      {% endif %}
       <script src="{% static 'flowbite/packages/flowbite.min.js' %}" defer></script>
       {% comment %}
       <script src="https://cdn.tailwindcss.com"></script>
@@ -70,7 +72,9 @@
    <nav class="bg-white border-indigo-400 dark:bg-gray-900 print:hidden">
       <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
          <a href="{% url 'home' %}" class="flex items-center">
+            {% if enterprise.logo %}
             <img src="{{ enterprise.logo.url }}" class="h-12 mr-3" alt="{{enterprise.name}} Logo" />
+            {% endif %}
             <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">{{enterprise.name}}</span>
          </a>
 
